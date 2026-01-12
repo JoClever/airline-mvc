@@ -97,7 +97,7 @@ class PlannerController extends Controller
      */
     public function show(Flight $flight)
     {
-        $flight->load('aircraft', 'departureAirport', 'arrivalAirport', 'diversionAirport', 'crew', 'transferCrews');
+        $flight->load(['aircraft', 'departureAirport', 'arrivalAirport', 'diversionAirport', 'crew', 'transferCrews']);
         return view('flights.planner.show', compact('flight'));
     }
 
@@ -106,7 +106,7 @@ class PlannerController extends Controller
      */
     public function edit(Flight $flight)
     {
-        $flight->load('aircraft', 'departureAirport', 'arrivalAirport', 'diversionAirport', 'crew', 'transferCrews');
+        $flight->load(['aircraft', 'departureAirport', 'arrivalAirport', 'diversionAirport', 'crew', 'transferCrews']);
         return view('flights.planner.edit', compact('flight'));
     }
 
