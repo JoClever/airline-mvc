@@ -41,7 +41,7 @@ class FlightController extends Controller
             $flight->arrival_airport_icao = $flight->arrivalAirport ? $flight->arrivalAirport->icao_code : 'N/A';
         }
         
-        return view('flights.index', compact('flights', 'aircrafts', 'selectedAircraft'));
+        return view('flights.planner.index', compact('flights', 'aircrafts', 'selectedAircraft'));
     }
 
     /**
@@ -51,7 +51,7 @@ class FlightController extends Controller
     {
         $selectedAircraftId = request()->query('aircraft_id');
         $selectedAircraft = Aircraft::find($selectedAircraftId);
-        return view('flights.create', compact('selectedAircraft'));
+        return view('flights.planner.create', compact('selectedAircraft'));
     }
 
     /**
@@ -89,7 +89,7 @@ class FlightController extends Controller
             'aircraft_id' => $aircraft->id,
         ]);
 
-        return redirect()->route('flights.index')->with('success', 'Flight created successfully.');
+        return redirect()->route('planner.flights.index')->with('success', 'Flight created successfully.');
     }
 
     /**
@@ -106,7 +106,7 @@ class FlightController extends Controller
     public function edit(Flight $flight)
     {
         $flight->load('aircraft', 'departureAirport', 'arrivalAirport', 'diversionAirport', 'crew', 'transferCrews');
-        return view('flights.edit', compact('flight'));
+        return view('flights.planner.edit', compact('flight'));
     }
 
     /**
@@ -142,7 +142,7 @@ class FlightController extends Controller
             'aircraft_id' => $aircraft->id,
         ]);
 
-        return redirect()->route('flights.index')->with('success', 'Flight updated successfully.');
+        return redirect()->route('planner.flights.index')->with('success', 'Flight updated successfully.');
     }
 
     /**
@@ -151,6 +151,6 @@ class FlightController extends Controller
     public function destroy(Flight $flight)
     {
         $flight->delete();
-        return redirect()->route('flights.index')->with('success', 'Flight deleted successfully.');
+        return redirect()->route('planner.flights.index')->with('success', 'Flight deleted successfully.');
     }
 }

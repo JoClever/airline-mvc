@@ -12,7 +12,7 @@
         </div>
     @endif
     <div>
-        <form method="POST" action="/flights/{{ $flight->id }}">
+        <form method="POST" action="{{ route('planner.flights.update', ['flight' => $flight->id]) }}">
             @csrf
             @method('PUT')
 

@@ -12,7 +12,7 @@
         </div>
     @endif
     <div>
-        <form method="POST" action="/planner">
+        <form method="POST" action="{{ route('planner.flights.store') }}">
             @csrf
             <div>
                 <label for="flight_number">Flight Number:</label>

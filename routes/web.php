@@ -7,4 +7,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('flights', FlightController::class);
+Route::prefix('planner')
+    ->name('planner.')
+    ->group(function () {
+        Route::resource('flights', FlightController::class);
+    });

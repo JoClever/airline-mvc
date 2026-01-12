@@ -6,15 +6,15 @@
     <div>
         <h2>Create Flight</h2>
         @if ($selectedAircraft)
-            <a href="/flights/create?aircraft_id={{ $selectedAircraft->id }}" class="text-blue-500 underline">Create a new flight for {{ $selectedAircraft->registration_number }}</a>
+            <a href="{{ route('planner.flights.create', ['aircraft_id' => $selectedAircraft->id]) }}" class="text-blue-500 underline">Create a new flight for {{ $selectedAircraft->registration_number }}</a>
         @else
-            <a href="/flights/create" class="text-blue-500 underline">Create a new flight</a>
+            <a href="{{ route('planner.flights.create') }}" class="text-blue-500 underline">Create a new flight</a>
         @endif
     </div>
 
     <div>
         <h2>Filter by Aircraft</h2>
-        <form method="GET" action="/flights">
+        <form method="GET" action="/planner/flights">
             <select name="aircraft_id" onchange="this.form.submit()">
                 <option value="">All Aircraft</option>
         @foreach ($aircrafts as $aircraft)
@@ -58,10 +58,10 @@
                         <td class="border px-4 py-2">{{ $flight['departure_time_scheduled'] }}</td>
                         <td class="border px-4 py-2">{{ $flight['arrival_time_scheduled'] }}</td>
                         <td class="border px-4 py-2">
-                            <form method="GET" action="/flights/{{ $flight['id'] }}/edit" style="display:inline;">
+                            <form method="GET" action="{{ route('planner.flights.edit', ['flight' => $flight['id']]) }}" style="display:inline;">
                                 <button type="submit" class="text-blue-500 underline">Edit</button>
                             </form>
-                            <form method="POST" action="/flights/{{ $flight['id'] }}" style="display:inline;">
+                            <form method="POST" action="{{ route('planner.flights.destroy', ['flight' => $flight['id']]) }}" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-red-500 underline">Delete</button>
