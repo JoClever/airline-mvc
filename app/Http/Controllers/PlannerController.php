@@ -8,7 +8,7 @@ use App\Models\Aircraft;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class FlightController extends Controller
+class PlannerController extends Controller
 {
     /**
      * Display a listing of the resource.
