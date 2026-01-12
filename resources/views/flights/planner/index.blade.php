@@ -58,6 +58,9 @@
                         <td class="border px-4 py-2">{{ $flight['departure_time_scheduled'] }}</td>
                         <td class="border px-4 py-2">{{ $flight['arrival_time_scheduled'] }}</td>
                         <td class="border px-4 py-2">
+                            <form method="GET" action="{{ route('planner.flights.show', ['flight' => $flight['id']]) }}" style="display:inline;">
+                                <button type="submit" class="text-green-500 underline">View</button>
+                            </form>
                             <form method="GET" action="{{ route('planner.flights.edit', ['flight' => $flight['id']]) }}" style="display:inline;">
                                 <button type="submit" class="text-blue-500 underline">Edit</button>
                             </form>
