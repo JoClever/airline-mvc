@@ -63,10 +63,7 @@ class FlightController extends Controller
         $flight->load([
             'aircraft', 
             'departureAirport', 
-            'arrivalAirport', 
-            'diversionAirport', 
-            'crew', 
-            'transferCrews'
+            'arrivalAirport'
         ]);
         
         return view('planner.flights.show', compact('flight'));
@@ -80,10 +77,7 @@ class FlightController extends Controller
         $flight->load([
             'aircraft', 
             'departureAirport', 
-            'arrivalAirport', 
-            'diversionAirport', 
-            'crew', 
-            'transferCrews'
+            'arrivalAirport'
         ]);
         
         return view('planner.flights.edit', compact('flight'));
