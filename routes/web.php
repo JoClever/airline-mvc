@@ -15,7 +15,6 @@ Route::get('/', function () {
 Route::prefix('planner')
     ->name('planner.')
     ->group(function () {
-        Route::get('/flights/create/{aircraft}', [PlannerFlightController::class, 'createForAircraft'])->name('flights.create.forAircraft');
         Route::resource('flights', PlannerFlightController::class);
     });
 

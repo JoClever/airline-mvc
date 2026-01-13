@@ -35,11 +35,9 @@ class FlightController extends Controller
      */
     public function create()
     {
-        return view('planner.flights.create');
-    }
-
-    public function createForAircraft(Aircraft $aircraft)
-    {
+        // If an aircraft_id is provided in the query string, load that aircraft
+        $aircraft = (request()->has('aircraft_id')) ? Aircraft::find(request()->query('aircraft_id')) : null;
+        
         return view('planner.flights.create', compact('aircraft'));
     }
 
