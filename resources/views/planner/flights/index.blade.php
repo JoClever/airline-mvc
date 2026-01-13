@@ -13,14 +13,41 @@
     </div>
 
     <div>
-        <h2>Filter by Aircraft</h2>
+        <h2>Filter Flights</h2>
         <form method="GET" action="/planner/flights">
-            <select name="aircraft_id" onchange="this.form.submit()">
-                <option value="">All Aircraft</option>
-        @foreach ($aircrafts as $aircraft)
-            <option value="{{ $aircraft['id'] }}" {{ ($selectedAircraft->id ?? '') == $aircraft['id'] ? 'selected' : '' }}>{{ $aircraft['registration_number'] }}</option>
-        @endforeach
-            </select>
+            <div>
+                <label for="aircraft_id">Aircraft</label>
+                <select name="aircraft_id" id="aircraft_id">
+                    <option value="">All Aircraft</option>
+                    @foreach ($aircrafts as $aircraft)
+                        <option value="{{ $aircraft['id'] }}" {{ ($selectedAircraft->id ?? '') == $aircraft['id'] ? 'selected' : '' }}>{{ $aircraft['registration_number'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label for="flightnumber">Flight Number</label>
+                <input type="text" name="flightnumber" id="flightnumber" value="{{ request('flightnumber') }}" placeholder="Flight Number">
+            </div>
+            <div>
+                <label for="departure_airport">Departure Airport</label>
+                <input type="text" name="departure_airport" id="departure_airport" value="{{ request('departure_airport') }}" placeholder="Departure Airport">
+            </div>
+            <div>
+                <label for="arrival_airport">Arrival Airport</label>
+                <input type="text" name="arrival_airport" id="arrival_airport" value="{{ request('arrival_airport') }}" placeholder="Arrival Airport">
+            </div>
+            <div>
+                <label for="day">Day</label>
+                <input type="date" name="day" id="day" value="{{ request('day') }}">
+            </div>
+            <div>
+                <label for="month">Month</label>
+                <input type="month" name="month" id="month" value="{{ request('month') }}">
+            </div>
+            <div>
+                <button type="submit">Apply Filters</button>
+                <a href="{{ route('planner.flights.index') }}">Clear Filters</a>
+            </div>
         </form>
     </div>
 

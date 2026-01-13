@@ -8,7 +8,7 @@ use App\Models\Aircraft;
 use App\Services\FlightService;
 use App\Http\Requests\StoreFlightRequest;
 use App\Http\Requests\UpdateFlightRequest;
-use App\Http\Requests\FilterFlightsByAircraftRequest;
+use App\Http\Requests\FilterFlightsRequest;
 
 class FlightController extends Controller
 {
@@ -19,7 +19,7 @@ class FlightController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(FilterFlightsByAircraftRequest $request)
+    public function index(FilterFlightsRequest $request)
     {
         $aircrafts = Aircraft::all();
         $selectedAircraft = Aircraft::find($request->validated()['aircraft_id'] ?? null);
