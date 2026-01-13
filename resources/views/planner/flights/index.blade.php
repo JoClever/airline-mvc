@@ -19,7 +19,7 @@
         </div>
 
         <!-- Filters Section -->
-        <form method="GET" action="/planner/flights" class="card bg-base-200 card-border shadow-lg">
+        <form method="GET" action="{{ route('planner.flights.index') }}" class="card bg-base-200 card-border shadow-lg">
             <div class="card-body">
                 <fieldset>
                     <legend class="text-xl font-bold px-2">Filter Flights</legend>
@@ -77,16 +77,18 @@
 
         @if ($errors->any())
             <div class="alert alert-error shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2m2 2l2 2m0 0l2 2m-2-2l-2 2" /></svg>
-                    <div>
-                        <h2 class="text-2xl font-bold">Validation Errors</h2>
-                        <ul class="text-sm">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+                    <h3 class="font-bold">Validation Errors</h3>
+                    <ul class="text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         @endif
