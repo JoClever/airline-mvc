@@ -36,7 +36,7 @@
             </div>
             <div>
                 <label for="registration_number">Aircraft Registration Number:</label>
-                <input type="text" id="registration_number" name="registration_number" value="{{ $selectedAircraft->registration_number ?? '' }}" required>
+                <input type="text" id="registration_number" name="registration_number" value="{{ $aircraft->registration_number ?? '' }}" required>
             </div>
             <button type="submit">Save Flight</button>
         </form>

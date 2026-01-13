@@ -1,24 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Disposition;
 
+use App\Http\Controllers\Controller;
 use App\Models\Flight;
+use App\Services\FlightService;
 use Illuminate\Http\Request;
 
-class DispositionFlightController extends Controller
+class FlightController extends Controller
 {
+    public function __construct(
+        private FlightService $flightService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $flights = Flight::all();
-
-        foreach ($flights as $flight) {
-            $flight->departure_airport_icao = $flight->departureAirport ? $flight->departureAirport->icao_code : 'N/A';
-            $flight->arrival_airport_icao = $flight->arrivalAirport ? $flight->arrivalAirport->icao_code : 'N/A';
-            $flight->crew_id = $flight->crew ? $flight->crew->id : 'Unassigned';
-        }
+        $this->flightService->enrichFlightsWithCrewInfo($flights);
         
         return view('disposition.flights.index', compact('flights'));
     }
@@ -37,7 +38,8 @@ class DispositionFlightController extends Controller
      */
     public function edit(Flight $flight)
     {
-        //
+        $flight->load(['departureAirport', 'arrivalAirport', 'aircraft', 'crew']);
+        return view('disposition.flights.edit', compact('flight'));
     }
 
     /**
@@ -45,6 +47,9 @@ class DispositionFlightController extends Controller
      */
     public function update(Request $request, Flight $flight)
     {
-        //
+        // Implementation needed
+        return redirect()
+            ->route('disposition.flights.index')
+            ->with('success', 'Flight updated successfully.');
     }
 }

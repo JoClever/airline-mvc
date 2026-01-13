@@ -6,7 +6,7 @@
     <div>
         <h2>Create Flight</h2>
         @if ($selectedAircraft)
-            <a href="{{ route('planner.flights.create', ['aircraft_id' => $selectedAircraft->id]) }}" class="text-blue-500 underline">Create a new flight for {{ $selectedAircraft->registration_number }}</a>
+            <a href="{{ route('planner.flights.create.forAircraft', ['aircraft' => $selectedAircraft->id]) }}" class="text-blue-500 underline">Create a new flight for {{ $selectedAircraft->registration_number }}</a>
         @else
             <a href="{{ route('planner.flights.create') }}" class="text-blue-500 underline">Create a new flight</a>
         @endif

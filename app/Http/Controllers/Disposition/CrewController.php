@@ -1,18 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Disposition;
 
+use App\Http\Controllers\Controller;
 use App\Models\Crew;
-use Illuminate\Http\Request;
+use App\Services\CrewService;
 
-class DispositionCrewController extends Controller
+class CrewController extends Controller
 {
+    public function __construct(
+        private CrewService $crewService
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $crews = Crew::all();
+        $crews = $this->crewService->getAllCrews();
+        $this->crewService->enrichCrewsWithFlightStats($crews);
         
         return view('disposition.crews.index', compact('crews'));
     }

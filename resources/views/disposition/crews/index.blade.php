@@ -42,6 +42,8 @@
                 @foreach ($crews as $crew)
                     <tr>
                         <td class="border px-4 py-2">{{ $crew['id'] }}</td>
+                        <td class="border px-4 py-2">{{ $crew->flights_day_count }}</td>
+                        <td class="border px-4 py-2">{{ $crew->flights_month_count }}</td>
                         <td class="border px-4 py-2">
                             <form method="GET" action="{{ route('disposition.crews.show', ['crew' => $crew['id']]) }}" style="display:inline;">
                                 <button type="submit" class="text-green-500 underline">View</button>
