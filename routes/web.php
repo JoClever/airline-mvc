@@ -9,7 +9,7 @@ use App\Http\Controllers\Ops\CrewController as OpsCrewController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::prefix('planner')

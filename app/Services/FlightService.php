@@ -49,6 +49,17 @@ class FlightService
     }
 
     /**
+     * Enrich a single flight with formatted date.
+     */
+    public function enrichFlightWithDate(Flight $flight): Flight
+    {
+        $flight->formatted_departure_date = date('Y-m-d', strtotime($flight->departure_time_scheduled));
+        $flight->formatted_arrival_date = date('Y-m-d', strtotime($flight->arrival_time_scheduled));
+
+        return $flight;
+    }
+
+    /**
      * Enrich flights with crew assignment info.
      */
     public function enrichFlightsWithCrewInfo($flights): Collection|array

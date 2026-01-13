@@ -1,71 +1,88 @@
 <x-layout>
-    <h1 class="text-3xl font-bold underline">
-        Flights List
-    </h1>
-
-    {{-- <div>
-        <h2>Filter by Aircraft</h2>
-        <form method="GET" action="/planner/flights">
-            <select name="aircraft_id" onchange="this.form.submit()">
-                <option value="">All Aircraft</option>
-        @foreach ($aircrafts as $aircraft)
-            <option value="{{ $aircraft['id'] }}" {{ ($selectedAircraft->id ?? '') == $aircraft['id'] ? 'selected' : '' }}>{{ $aircraft['registration_number'] }}</option>
-        @endforeach
-            </select>
-        </form>
-    </div> --}}
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+    <div class="max-w-6xl mx-auto space-y-6">
+        <div>
+            <h1 class="text-4xl font-bold mb-2">Flight Disposition</h1>
+            <p class="text-gray-600">Manage crew assignments and flight disposition</p>
         </div>
-    @endif
 
-    <div>
-        <h2>Flight Records</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th class="border px-4 py-2">Flight Number</th>
-                    <th class="border px-4 py-2">Departure</th>
-                    <th class="border px-4 py-2">Arrival</th>
-                    <th class="border px-4 py-2">STD</th>
-                    <th class="border px-4 py-2">STA</th>
-                    <th class="border px-4 py-2">Crew</th>
-                    <th class="border px-4 py-2">Crew Transfers</th>
-                    <th class="border px-4 py-2">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($flights as $flight)
-                    <tr>
-                        <td class="border px-4 py-2">{{ $flight['flight_number'] }}</td>
-                        <td class="border px-4 py-2">{{ $flight['departure_airport_icao'] }}</td>
-                        <td class="border px-4 py-2">{{ $flight['arrival_airport_icao'] }}</td>
-                        <td class="border px-4 py-2">{{ $flight['departure_time_scheduled'] }}</td>
-                        <td class="border px-4 py-2">{{ $flight['arrival_time_scheduled'] }}</td>
-                        <td class="border px-4 py-2">{{ $flight['crew_id'] }}</td>
-                        <td class="border px-4 py-2">
-                            @foreach ($flight['crewTransfers'] as $transfer)
-                                <div>
-                                    {{ $transfer['id'] }}
-                                </div>
+        @if ($errors->any())
+            <div class="alert alert-error shadow-lg">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2m2 2l2 2m0 0l2 2m-2-2l-2 2" /></svg>
+                    <div>
+                        <h3 class="font-bold">Validation Errors</h3>
+                        <ul class="text-sm">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
                             @endforeach
-                        <td class="border px-4 py-2">
-                            <form method="GET" action="{{ route('disposition.flights.show', ['flight' => $flight['id']]) }}" style="display:inline;">
-                                <button type="submit" class="text-green-500 underline">View</button>
-                            </form>
-                            <form method="GET" action="{{ route('disposition.flights.edit', ['flight' => $flight['id']]) }}" style="display:inline;">
-                                <button type="submit" class="text-blue-500 underline">Edit</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+                <div class="overflow-x-auto">
+                    <table class="table w-full">
+                        <thead>
+                            <tr>
+                                <th>Flight Number</th>
+                                <th>Departure</th>
+                                <th>Arrival</th>
+                                <th>STD</th>
+                                <th>STA</th>
+                                <th>Operating Crew</th>
+                                <th>Transferring Crews</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($flights as $flight)
+                                <tr class="hover">
+                                    <td>
+                                        <span class="font-bold">{{ $flight['flight_number'] }}</span>
+                                    </td>
+                                    <td>{{ $flight['departure_airport_icao'] }}</td>
+                                    <td>{{ $flight['arrival_airport_icao'] }}</td>
+                                    <td>{{ $flight['departure_time_scheduled'] }}</td>
+                                    <td>{{ $flight['arrival_time_scheduled'] }}</td>
+                                    <td>
+                                        @if($flight['crew_id'])
+                                            <span class="badge badge-success">#{{ $flight['crew_id'] }}</span>
+                                        @else
+                                            <span class="badge badge-warning">Unassigned</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @foreach ($flight['crewTransfers'] as $transfer)
+                                            <div>
+                                                <span class="badge">#{{ $transfer['id'] }}</span>
+                                            </div>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        <div class="flex gap-2">
+                                            <form method="GET" action="{{ route('disposition.flights.show', ['flight' => $flight['id']]) }}">
+                                                <button type="submit" class="btn btn-sm btn-info">View</button>
+                                            </form>
+                                            <form method="GET" action="{{ route('disposition.flights.edit', ['flight' => $flight['id']]) }}">
+                                                <button type="submit" class="btn btn-sm btn-warning">Edit</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @if(count($flights) == 0)
+                    <div class="alert alert-info mt-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>No flights available for disposition.</span>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
 </x-layout>

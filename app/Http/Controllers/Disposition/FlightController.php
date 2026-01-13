@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Disposition;
 
-use App\Http\Controllers\Controller;
 use App\Models\Flight;
-use App\Services\FlightService;
 use Illuminate\Http\Request;
+use App\Services\FlightService;
+use App\Http\Controllers\Controller;
+use SebastianBergmann\CodeCoverage\Filter;
+use App\Http\Requests\FilterFlightsRequest;
 
 class FlightController extends Controller
 {
@@ -16,7 +18,7 @@ class FlightController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(FilterFlightsRequest $request)
     {
         $flights = Flight::all();
         $this->flightService->enrichFlightsWithCrewInfo($flights);

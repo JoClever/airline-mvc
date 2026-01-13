@@ -1,27 +1,20 @@
 <x-layout>
-    <h1 class="text-3xl font-bold underline">
-        Welcome to the Airline Management System
-    </h1>
-    <table>
-        <thead>
-            <tr>
-                <th class="border px-4 py-2">Flight Number</th>
-                <th class="border px-4 py-2">Origin</th>
-                <th class="border px-4 py-2">Destination</th>
-                <th class="border px-4 py-2">Departure Time</th>
-                <th class="border px-4 py-2">Arrival Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($flights as $flight)
-                <tr>
-                    <td class="border px-4 py-2">{{ $flight['flight_number'] }}</td>
-                    <td class="border px-4 py-2">{{ $flight['origin'] }}</td>
-                    <td class="border px-4 py-2">{{ $flight['destination'] }}</td>
-                    <td class="border px-4 py-2">{{ $flight['departure_time'] }}</td>
-                    <td class="border px-4 py-2">{{ $flight['arrival_time'] }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="max-w-6xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold mb-2">Welcome to the Airline Management System</h1>
+            <p class="text-gray-600 text-lg">Manage flights, crews, and operations efficiently</p>
+        </div>
+    </div>
+
+    <div class="card w-xl bg-base-100 card-lg shadow-sm m-auto">
+        <div class="card-body items-center text-center">
+            <h2 class="card-title">Login</h2>
+            <p>Log into one of the following roles:</p>
+            <div class="card-actions justify-end">
+                <a href="{{ route('planner.flights.index') }}" class="btn btn-primary">Planner</a>
+                <a href="{{ route('disposition.flights.index') }}" class="btn btn-secondary">Disposition</a>
+                <a href="{{ route('ops.flights.index') }}" class="btn btn-accent">Operations</a>
+            </div>
+        </div>
+    </div>
 </x-layout>

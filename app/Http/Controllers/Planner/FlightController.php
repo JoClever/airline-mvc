@@ -58,6 +58,7 @@ class FlightController extends Controller
      */
     public function show(Flight $flight)
     {
+        $this->flightService->enrichFlightWithDate($flight);
         $flight->load([
             'aircraft', 
             'departureAirport', 
@@ -72,6 +73,7 @@ class FlightController extends Controller
      */
     public function edit(Flight $flight)
     {
+        $this->flightService->enrichFlightWithDate($flight);
         $flight->load([
             'aircraft', 
             'departureAirport', 
