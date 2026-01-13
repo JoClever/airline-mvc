@@ -14,7 +14,7 @@ class DispositionCrewController extends Controller
     {
         $crews = Crew::all();
         
-        return view('crews.disposition.index', compact('crews'));
+        return view('disposition.crews.index', compact('crews'));
     }
 
     /**
@@ -22,6 +22,6 @@ class DispositionCrewController extends Controller
      */
     public function show(Crew $crew)
     {
-        return view('crews.disposition.show', compact('crew'));
+        return view('disposition.crews.show', compact('crew'));
     }
 }

@@ -41,7 +41,7 @@ class PlannerController extends Controller
             $flight->arrival_airport_icao = $flight->arrivalAirport ? $flight->arrivalAirport->icao_code : 'N/A';
         }
         
-        return view('flights.planner.index', compact('flights', 'aircrafts', 'selectedAircraft'));
+        return view('planner.flights.index', compact('flights', 'aircrafts', 'selectedAircraft'));
     }
 
     /**
@@ -51,7 +51,7 @@ class PlannerController extends Controller
     {
         $selectedAircraftId = request()->query('aircraft_id');
         $selectedAircraft = Aircraft::find($selectedAircraftId);
-        return view('flights.planner.create', compact('selectedAircraft'));
+        return view('planner.flights.create', compact('selectedAircraft'));
     }
 
     /**
@@ -98,7 +98,7 @@ class PlannerController extends Controller
     public function show(Flight $flight)
     {
         $flight->load(['aircraft', 'departureAirport', 'arrivalAirport', 'diversionAirport', 'crew', 'transferCrews']);
-        return view('flights.planner.show', compact('flight'));
+        return view('planner.flights.show', compact('flight'));
     }
 
     /**
@@ -107,7 +107,7 @@ class PlannerController extends Controller
     public function edit(Flight $flight)
     {
         $flight->load(['aircraft', 'departureAirport', 'arrivalAirport', 'diversionAirport', 'crew', 'transferCrews']);
-        return view('flights.planner.edit', compact('flight'));
+        return view('planner.flights.edit', compact('flight'));
     }
 
     /**

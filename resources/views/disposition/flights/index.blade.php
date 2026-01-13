@@ -36,6 +36,7 @@
                     <th class="border px-4 py-2">STD</th>
                     <th class="border px-4 py-2">STA</th>
                     <th class="border px-4 py-2">Crew</th>
+                    <th class="border px-4 py-2">Crew Transfers</th>
                     <th class="border px-4 py-2">Actions</th>
                 </tr>
             </thead>
@@ -49,11 +50,21 @@
                         <td class="border px-4 py-2">{{ $flight['arrival_time_scheduled'] }}</td>
                         <td class="border px-4 py-2">{{ $flight['crew_id'] }}</td>
                         <td class="border px-4 py-2">
+                            @foreach ($flight['crewTransfers'] as $transfer)
+                                <div>
+                                    {{ $transfer['id'] }}
+                                </div>
+                            @endforeach
+                        <td class="border px-4 py-2">
                             <form method="GET" action="{{ route('disposition.flights.show', ['flight' => $flight['id']]) }}" style="display:inline;">
                                 <button type="submit" class="text-green-500 underline">View</button>
                             </form>
                             <form method="GET" action="{{ route('disposition.flights.edit', ['flight' => $flight['id']]) }}" style="display:inline;">
-                                <button type="submit" class="text-blue-500 underline">Edit</button>
+                                <button type="submit" class="text-blue-500 underline">Edit Crew</button>
+                            </form>
+                            <form method="GET" action="{{ route('disposition.transfers.edit', ['flight' => $flight['id']]) }}" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="text-purple-500 underline">Edit Crew Transfers</button>
                             </form>
                         </td>
                     </tr>

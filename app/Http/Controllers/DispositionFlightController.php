@@ -20,7 +20,7 @@ class DispositionFlightController extends Controller
             $flight->crew_id = $flight->crew ? $flight->crew->id : 'Unassigned';
         }
         
-        return view('flights.disposition.index', compact('flights'));
+        return view('disposition.flights.index', compact('flights'));
     }
 
     /**
@@ -29,7 +29,7 @@ class DispositionFlightController extends Controller
     public function show(Flight $flight)
     {
         $flight->load(['departureAirport', 'arrivalAirport', 'aircraft', 'crew']);
-        return view('flights.disposition.show', compact('flight'));
+        return view('disposition.flights.show', compact('flight'));
     }
 
     /**

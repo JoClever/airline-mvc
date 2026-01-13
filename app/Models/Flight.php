@@ -50,7 +50,7 @@ class Flight extends Model
         return $this->belongsTo(Crew::class);
     }
 
-    public function transferCrews() : BelongsToMany
+    public function crewTransfers() : BelongsToMany
     {
         return $this->belongsToMany(Crew::class, 'flight_crew_transfers', 'flight_id', 'crew_id');
     }
