@@ -60,11 +60,7 @@
                                 <button type="submit" class="text-green-500 underline">View</button>
                             </form>
                             <form method="GET" action="{{ route('disposition.flights.edit', ['flight' => $flight['id']]) }}" style="display:inline;">
-                                <button type="submit" class="text-blue-500 underline">Edit Crew</button>
-                            </form>
-                            <form method="GET" action="{{ route('disposition.transfers.edit', ['flight' => $flight['id']]) }}" style="display:inline;">
-                                @csrf
-                                <button type="submit" class="text-purple-500 underline">Edit Crew Transfers</button>
+                                <button type="submit" class="text-blue-500 underline">Edit</button>
                             </form>
                         </td>
                     </tr>
