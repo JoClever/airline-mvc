@@ -10,17 +10,23 @@ use App\Http\Controllers\Ops\CrewController as OpsCrewController;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 
 Route::prefix('planner')
     ->name('planner.')
     ->group(function () {
+        Route::get('/', function () {
+            return redirect()->route('planner.flights.index');
+        })->name('dashboard');
         Route::resource('flights', PlannerFlightController::class);
     });
 
 Route::prefix('disposition')
     ->name('disposition.')
     ->group(function () {
+        Route::get('/', function () {
+            return view('disposition.index');
+        })->name('dashboard');
         Route::resource('flights', DispositionFlightController::class)->only(['index', 'show', 'update', 'edit']);
         Route::resource('crews', DispositionCrewController::class)->only(['index', 'show']);
     });
@@ -28,6 +34,9 @@ Route::prefix('disposition')
 Route::prefix('ops')
     ->name('ops.')
     ->group(function () {
+        Route::get('/', function () {
+            return view('ops.index');
+        })->name('dashboard');
         Route::resource('flights', OpsFlightController::class)->only(['index', 'show', 'update', 'edit']);
         Route::resource('crews', OpsCrewController::class)->only(['index', 'show']);
     });

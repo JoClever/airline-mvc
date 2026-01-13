@@ -6,14 +6,14 @@
         </div>
     </div>
 
-    <div class="card w-xl bg-base-100 card-lg shadow-sm m-auto">
+    <div class="card w-sm bg-base-200 card-lg shadow-sm m-auto">
         <div class="card-body items-center text-center">
             <h2 class="card-title">Login</h2>
-            <p>Log into one of the following roles:</p>
-            <div class="card-actions justify-end">
-                <a href="{{ route('planner.flights.index') }}" class="btn btn-primary">Planner</a>
-                <a href="{{ route('disposition.flights.index') }}" class="btn btn-secondary">Disposition</a>
-                <a href="{{ route('ops.flights.index') }}" class="btn btn-accent">Operations</a>
+            <p class="mb-4">Log into one of the following roles:</p>
+            <div class="card-actions justify-end flex-col items-center">
+                <a href="{{ route('planner.dashboard') }}" class="btn btn-primary">Planner</a>
+                <a href="{{ route('disposition.dashboard') }}" class="btn btn-secondary">Disposition</a>
+                <a href="{{ route('ops.dashboard') }}" class="btn btn-accent">Operations</a>
             </div>
         </div>
     </div>

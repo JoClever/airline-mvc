@@ -29,7 +29,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a>Ops</a>
+                    <a>Operations</a>
                     <ul class="p-2">
                         <li><a href="{{ route('ops.flights.index') }}">Flights</a></li>
                         <li><a href="{{ route('ops.crews.index') }}">Crews</a></li>
@@ -37,7 +37,7 @@
                 </li>
             </ul>
             </div>
-            <a class="btn btn-ghost text-xl">{{ config('app.name', 'Airline') }}</a>
+            <a class="btn btn-ghost text-xl" href="{{ route('home') }}">{{ config('app.name', 'Airline') }}</a>
         </div>
         <div class="navbar-center hidden lg:flex">
             <ul class="menu menu-horizontal px-1">
@@ -53,7 +53,7 @@
             </li>
             <li>
                 <details>
-                    <summary>Ops</summary>
+                    <summary>Operations</summary>
                     <ul class="p-2 bg-base-100 w-40 z-1">
                         <li><a href="{{ route('ops.flights.index') }}">Flights</a></li>
                         <li><a href="{{ route('ops.crews.index') }}">Crews</a></li>
@@ -64,20 +64,18 @@
     </nav>
 
     @if(session('success'))
-        <div class="alert alert-success shadow-lg mx-4 my-4">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                <span>{{ session('success') }}</span>
-            </div>
+        <div class="w-max m-auto alert alert-success shadow-lg my-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="alert alert-error shadow-lg mx-4 my-4">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2m2 2l2 2m0 0l2 2m-2-2l-2 2" /></svg>
-                <span>{{ session('error') }}</span>
-            </div>
+        <div class="w-max m-auto alert alert-error shadow-lg my-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2m2 2l2 2m0 0l2 2m-2-2l-2 2" /></svg>
+            <span>{{ session('error') }}</span>
         </div>
     @endif
 
