@@ -8,23 +8,23 @@
         <div class="card bg-base-100 shadow-lg">
             <div class="card-body">
                 <div class="overflow-x-auto">
-                    <table class="table w-full">
+                    <table class="table w-full table-pin-rows table-pin-cols">
                         <thead>
                             <tr>
                                 <th>Crew ID</th>
-                                <th>Flights (Today)</th>
-                                <th>Flights (This Month)</th>
-                                <th>Hours (Today)</th>
-                                <th>Hours (This Month)</th>
+                                <td>Flights (Today)</td>
+                                <td>Flights (This Month)</td>
+                                <td>Hours (Today)</td>
+                                <td>Hours (This Month)</td>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($crews as $crew)
-                                <tr class="hover">
-                                    <td>
+                                <tr class="hover:bg-base-200 whitespace-nowrap">
+                                    <th>
                                         #{{ $crew['id'] }}
-                                    </td>
+                                    </th>
                                     <td>
                                         <span class="badge badge-info">{{ $crew->flights_day_count }}</span>
                                     </td>
@@ -37,14 +37,24 @@
                                     <td>
                                         <span class="badge">{{ $crew->hours_month ?? '0' }}</span>
                                     </td>
-                                    <td>
+                                    <th>
                                         <form method="GET" action="{{ route('disposition.crews.show', ['crew' => $crew['id']]) }}">
                                             <button type="submit" class="btn btn-sm btn-info">View Details</button>
                                         </form>
-                                    </td>
+                                    </th>
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Crew ID</th>
+                                <td>Flights (Today)</td>
+                                <td>Flights (This Month)</td>
+                                <td>Hours (Today)</td>
+                                <td>Hours (This Month)</td>
+                                <th>Actions</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 @if(count($crews) == 0)

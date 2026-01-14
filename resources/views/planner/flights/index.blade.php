@@ -97,30 +97,30 @@
         <div class="card card-border bg-base-100 shadow-lg">
             <div class="card-body">
                 <div class="overflow-x-auto">
-                    <table class="table w-full">
+                    <table class="table w-full table-pin-rows table-pin-cols">
                         <thead>
                             <tr>
                                 <th>Flight Number</th>
-                                <th>Aircraft</th>
-                                <th>Departure</th>
-                                <th>Arrival</th>
-                                <th>STD</th>
-                                <th>STA</th>
+                                <td>Aircraft</td>
+                                <td>Departure</td>
+                                <td>Arrival</td>
+                                <td>STD</td>
+                                <td>STA</td>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($flights as $flight)
-                                <tr class="hover">
-                                    <td>
+                                <tr class="hover:bg-base-200 whitespace-nowrap">
+                                    <th>
                                         <span class="font-bold">{{ $flight['flight_number'] }}</span>
-                                    </td>
+                                    </th>
                                     <td>{{ $flight['aircraft_registration_number'] }}</td>
                                     <td>{{ $flight['departure_airport_icao'] }}</td>
                                     <td>{{ $flight['arrival_airport_icao'] }}</td>
                                     <td>{{ $flight['departure_time_scheduled'] }}</td>
                                     <td>{{ $flight['arrival_time_scheduled'] }}</td>
-                                    <td>
+                                    <th>
                                         <div class="flex gap-2">
                                             <form method="GET" action="{{ route('planner.flights.show', ['flight' => $flight['id']]) }}">
                                                 <button type="submit" class="btn btn-sm btn-info">View</button>
@@ -134,10 +134,21 @@
                                                 <button type="submit" class="btn btn-sm btn-error" onclick="return confirm('Are you sure?')">Delete</button>
                                             </form>
                                         </div>
-                                    </td>
+                                    </th>
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Flight Number</th>
+                                <td>Aircraft</td>
+                                <td>Departure</td>
+                                <td>Arrival</td>
+                                <td>STD</td>
+                                <td>STA</td>
+                                <th>Actions</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 @if(count($flights) == 0)
