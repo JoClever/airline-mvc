@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Disposition;
 
+use App\Models\Crew;
 use App\Models\Flight;
-use Illuminate\Http\Request;
+use App\Models\Airport;
 use App\Services\FlightService;
 use App\Http\Controllers\Controller;
-use SebastianBergmann\CodeCoverage\Filter;
 use App\Http\Requests\FilterFlightsRequest;
+use App\Http\Requests\UpdateDispositionFlightRequest;
 
 class FlightController extends Controller
 {
@@ -20,10 +21,18 @@ class FlightController extends Controller
      */
     public function index(FilterFlightsRequest $request)
     {
-        $flights = Flight::all();
-        $this->flightService->enrichFlightsWithCrewInfo($flights);
+        $airports = Airport::all();
+        $crews = Crew::all();
+
+        $validated = $request->validated();
+        $flights = $this->flightService->getFlightsFiltered(filter: $validated);
+        $this->flightService->enrichFlightsWithRelations($flights);
         
-        return view('disposition.flights.index', compact('flights'));
+        return view('disposition.flights.index', compact(
+            'flights',
+            'airports',
+            'crews',
+        ));
     }
 
     /**
@@ -31,7 +40,15 @@ class FlightController extends Controller
      */
     public function show(Flight $flight)
     {
-        $flight->load(['departureAirport', 'arrivalAirport', 'aircraft', 'crew']);
+        $this->flightService->enrichFlightWithDate($flight);
+
+        $flight->load([
+            'departureAirport',
+            'arrivalAirport',
+            'aircraft',
+            'crew'
+        ]);
+
         return view('disposition.flights.show', compact('flight'));
     }
 
@@ -40,16 +57,32 @@ class FlightController extends Controller
      */
     public function edit(Flight $flight)
     {
-        $flight->load(['departureAirport', 'arrivalAirport', 'aircraft', 'crew']);
-        return view('disposition.flights.edit', compact('flight'));
+        $airports = Airport::all();
+        $crews = Crew::all();
+
+        $this->flightService->enrichFlightWithDate($flight);
+
+        $flight->load([
+            'departureAirport',
+            'arrivalAirport',
+            'aircraft',
+            'crew'
+        ]);
+
+        return view('disposition.flights.edit', compact(
+            'flight',
+            'airports',
+            'crews',
+        ));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Flight $flight)
+    public function update(UpdateDispositionFlightRequest $request, Flight $flight)
     {
-        // Implementation needed
+        $this->flightService->updateFlightDisposition($flight, $request->validated());
+
         return redirect()
             ->route('disposition.flights.index')
             ->with('success', 'Flight updated successfully.');

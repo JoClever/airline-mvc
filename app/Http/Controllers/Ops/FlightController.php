@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Ops;
 
-use App\Http\Controllers\Controller;
+use App\Models\Crew;
 use App\Models\Flight;
+use App\Models\Airport;
+use App\Models\Aircraft;
 use App\Services\FlightService;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\FilterFlightsRequest;
+use App\Http\Requests\UpdateOpsFlightRequest;
 
 class FlightController extends Controller
 {
@@ -16,12 +20,22 @@ class FlightController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(FilterFlightsRequest $request)
     {
-        $flights = Flight::all();
-        $this->flightService->enrichFlightsWithCrewInfo($flights);
+        $aircrafts = Aircraft::all();
+        $airports = Airport::all();
+        $crews = Crew::all();
+
+        $validated = $request->validated();
+        $flights = $this->flightService->getFlightsFiltered(filter: $validated);
+        $this->flightService->enrichFlightsWithRelations($flights);
         
-        return view('ops.flights.index', compact('flights'));
+        return view('ops.flights.index', compact(
+            'flights',
+            'aircrafts',
+            'airports',
+            'crews',
+        ));
     }
 
     /**
@@ -29,7 +43,15 @@ class FlightController extends Controller
      */
     public function show(Flight $flight)
     {
-        $flight->load(['departureAirport', 'arrivalAirport', 'aircraft', 'crew']);
+        $this->flightService->enrichFlightWithDate($flight);
+
+        $flight->load([
+            'departureAirport',
+            'arrivalAirport',
+            'aircraft',
+            'crew'
+        ]);
+
         return view('ops.flights.show', compact('flight'));
     }
 
@@ -38,18 +60,36 @@ class FlightController extends Controller
      */
     public function edit(Flight $flight)
     {
-        $flight->load(['departureAirport', 'arrivalAirport', 'aircraft', 'crew']);
-        return view('ops.flights.edit', compact('flight'));
+        $aircrafts = Aircraft::all();
+        $airports = Airport::all();
+        $crews = Crew::all();
+
+        $this->flightService->enrichFlightWithDate($flight);
+
+        $flight->load([
+            'departureAirport',
+            'arrivalAirport',
+            'aircraft',
+            'crew'
+        ]);
+
+        return view('ops.flights.edit', compact(
+            'flight',
+            'aircrafts',
+            'airports',
+            'crews',
+        ));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Flight $flight)
+    public function update(UpdateOpsFlightRequest $request, Flight $flight)
     {
-        // Implementation needed
+        $this->flightService->updateFlightOps($flight, $request->validated());
+
         return redirect()
-            ->route('ops.flights.index')
-            ->with('success', 'Flight updated successfully.');
+            ->route('ops.flights.show', $flight)
+            ->with('success', 'Flight updated successfully.' . $request->diversion_airport_id);
     }
 }

@@ -22,12 +22,16 @@ class FilterFlightsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'flight_number' => 'nullable|exists:flights,flight_number',
+            'aircraft_id' => 'nullable|exists:aircraft,id',
+            'no_aircraft' => 'nullable|boolean',
+            'crew_id' => 'nullable|exists:crews,id',
+            'no_crew' => 'nullable|string:on',
+            'departure_time_scheduled' => 'nullable|date',
             'day' => 'nullable|date_format:Y-m-d',
             'month' => 'nullable|date_format:Y-m',
-            'flightnumber' => 'nullable|string|max:10',
-            'aircraft_id' => 'nullable|exists:aircraft,id',
-            'departure_airport' => 'nullable|string|max:100',
-            'arrival_airport' => 'nullable|string|max:100',
+            'departure_airport_id' => 'nullable|exists:airports,id',
+            'arrival_airport_id' => 'nullable|exists:airports,id',
         ];
     }
 

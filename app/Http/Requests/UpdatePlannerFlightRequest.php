@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreFlightRequest extends FormRequest
+class UpdatePlannerFlightRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class StoreFlightRequest extends FormRequest
             'flight_number' => 'required|string|max:10',
             'aircraft_id' => 'required|exists:aircraft,id',
             'departure_time_scheduled' => 'required|date',
-            'enroute_time' => 'required|decimal:0,2',
+            'arrival_time_scheduled' => 'required|date',
             'departure_airport_id' => 'required|exists:airports,id',
             'arrival_airport_id' => 'required|exists:airports,id',
         ];
@@ -42,9 +42,11 @@ class StoreFlightRequest extends FormRequest
             'flight_number.required' => 'The flight number is required.',
             'aircraft_id.required' => 'The aircraft is required.',
             'departure_time_scheduled.required' => 'The departure time is required.',
-            'enroute_time.required' => 'The enroute time is required.',
+            'arrival_time_scheduled.required' => 'The arrival time is required.',
             'departure_airport_id.required' => 'The departure airport is required.',
+            'departure_airport_id.exists' => 'The selected departure airport is invalid.',
             'arrival_airport_id.required' => 'The arrival airport is required.',
+            'arrival_airport_id.exists' => 'The selected arrival airport is invalid.',
         ];
     }
 }

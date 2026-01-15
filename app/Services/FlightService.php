@@ -43,6 +43,8 @@ class FlightService
             $flight->aircraft_registration_number = $flight->aircraft?->registration_number ?? 'N/A';
             $flight->departure_airport_icao = $flight->departureAirport?->icao_code ?? 'N/A';
             $flight->arrival_airport_icao = $flight->arrivalAirport?->icao_code ?? 'N/A';
+            $flight->crew_id = $flight->crew?->id ?? null;
+
         }
         
         return $flights;
@@ -53,6 +55,7 @@ class FlightService
      */
     public function enrichFlightWithDate(Flight $flight): Flight
     {
+        $flight->formatted_title = $flight->flight_number . '-' . date('Ymd', strtotime($flight->departure_time_scheduled));
         $flight->formatted_departure_date = date('Y-m-d', strtotime($flight->departure_time_scheduled));
         $flight->formatted_arrival_date = date('Y-m-d', strtotime($flight->arrival_time_scheduled));
 
@@ -60,67 +63,84 @@ class FlightService
     }
 
     /**
-     * Enrich flights with crew assignment info.
+     * Get flights filtered by flight number, aircraft, crew, date, month, departure airport, and arrival airport.
      */
-    public function enrichFlightsWithCrewInfo($flights): Collection|array
+    public function getFlightsFiltered(?array $filter): Collection
     {
-        foreach ($flights as $flight) {
-            $flight->departure_airport_icao = $flight->departureAirport?->icao_code ?? 'N/A';
-            $flight->arrival_airport_icao = $flight->arrivalAirport?->icao_code ?? 'N/A';
-            $flight->crew_id = $flight->crew?->id ?? 'Unassigned';
-        }
-        
-        return $flights;
-    }
+        $query = Flight::query();
 
-    /**
-     * Get flights filtered by aircraft if provided.
-     */
-    public function getFlightsByAircraft(?int $aircraftId = null)
-    {
-        if ($aircraftId) {
-            $aircraft = Aircraft::find($aircraftId);
-            return $aircraft ? $aircraft->flights : collect();
-        }
-        
-        return Flight::all();
+        if ($filter['flight_number'] ?? null)             $query->where('flight_number', 'like', '%' . $filter['flight_number'] . '%');
+        if ($filter['no_aircraft'] ?? null)               $query->whereNull('aircraft_id');
+        elseif ($filter['aircraft_id'] ?? null)           $query->where('aircraft_id', $filter['aircraft_id']);
+        if ($filter['no_crew'] ?? null)                   $query->whereNull('crew_id');
+        elseif ($filter['crew_id'] ?? null)               $query->where('crew_id', $filter['crew_id']);     
+        if ($filter['departure_time_scheduled'] ?? null)  $query->whereDate('departure_time_scheduled', $filter['departure_time_scheduled']);
+        if ($filter['day'] ?? null)                       $query->whereDate('departure_time_scheduled', $filter['day']);
+        if ($filter['month'] ?? null)                     $query->whereDate('departure_time_scheduled', 'like', $filter['month'] . '%');
+        if ($filter['departure_airport_id'] ?? null)      $query->where('departure_airport_id', $filter['departure_airport_id']);
+        if ($filter['arrival_airport_id'] ?? null)        $query->where('arrival_airport_id', $filter['arrival_airport_id']);
+
+        return $query->get();
     }
 
     /**
      * Create a flight with calculated arrival time.
      */
     public function createFlight(array $data): Flight
-    {
-        $departureAirport = $this->findAirportByIcao($data['departure_airport_icao']);
-        $arrivalAirport = $this->findAirportByIcao($data['arrival_airport_icao']);
-        $aircraft = $this->findAircraftByRegistration($data['registration_number']);
-        
+    {        
         return Flight::create([
             'flight_number' => $data['flight_number'],
-            'departure_time_scheduled' => $data['departure_time'],
-            'arrival_time_scheduled' => $this->calculateArrivalTime($data['departure_time'], $data['enroute_time']),
-            'departure_airport_id' => $departureAirport->id,
-            'arrival_airport_id' => $arrivalAirport->id,
-            'aircraft_id' => $aircraft->id,
+            'departure_time_scheduled' => $data['departure_time_scheduled'],
+            'arrival_time_scheduled' => $this->calculateArrivalTime($data['departure_time_scheduled'], $data['enroute_time']),
+            'departure_airport_id' => $data['departure_airport_id'],
+            'arrival_airport_id' => $data['arrival_airport_id'],
+            'aircraft_id' => $data['aircraft_id'],
+            'crew_id' => $data['crew_id'] ?? null,
         ]);
     }
 
     /**
-     * Update a flight.
+     * Update a flight for planner.
      */
-    public function updateFlight(Flight $flight, array $data): Flight
-    {
-        $departureAirport = $this->findAirportByIcao($data['departure_airport_icao']);
-        $arrivalAirport = $this->findAirportByIcao($data['arrival_airport_icao']);
-        $aircraft = $this->findAircraftByRegistration($data['registration_number']);
-        
+    public function updateFlightPlanner(Flight $flight, array $data): Flight
+    {        
         $flight->update([
             'flight_number' => $data['flight_number'],
-            'departure_time_scheduled' => $data['departure_time'],
-            'arrival_time_scheduled' => $data['arrival_time'],
-            'departure_airport_id' => $departureAirport->id,
-            'arrival_airport_id' => $arrivalAirport->id,
-            'aircraft_id' => $aircraft->id,
+            'departure_time_scheduled' => $data['departure_time_scheduled'],
+            'arrival_time_scheduled' => $data['arrival_time_scheduled'],
+            'departure_airport_id' => $data['departure_airport_id'],
+            'arrival_airport_id' => $data['arrival_airport_id'],
+            'aircraft_id' => $data['aircraft_id'],
+
+        ]);
+        
+        return $flight;
+    }
+
+    /**
+     * Update a flight for disposition.
+     */
+    public function updateFlightDisposition(Flight $flight, array $data): Flight
+    {        
+        $flight->update([
+            'crew_id' => $data['crew_id'] ?? null,
+        ]);
+        
+        return $flight;
+    }
+
+    /**
+     * Update a flight for ops.
+     */
+    public function updateFlightOps(Flight $flight, array $data): Flight
+    {        
+        $flight->update([
+            'diversion_airport_id' => $data['diversion_airport_id'] ?? null,
+            'departure_time_estimated' => $data['departure_time_estimated'] ?? null,
+            'arrival_time_estimated' => $data['arrival_time_estimated'] ?? null,
+            'departure_time_actual' => $data['departure_time_actual'] ?? null,
+            'arrival_time_actual' => $data['arrival_time_actual'] ?? null,
+            'crew_id' => $data['crew_id'] ?? null,
         ]);
         
         return $flight;

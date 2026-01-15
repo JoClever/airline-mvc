@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FilterFlightsRequest extends FormRequest
+class UpdateOpsFlightRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,8 @@ class FilterFlightsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'day' => 'nullable|date_format:Y-m-d',
-            'month' => 'nullable|date_format:Y-m',
-            'flightnumber' => 'nullable|string|max:10',
-            'aircraft_id' => 'nullable|exists:aircraft,id',
-            'departure_airport' => 'nullable|string|max:100',
-            'arrival_airport' => 'nullable|string|max:100',
+            'crew_id' => 'nullable|integer|exists:crews,id',
+            'diversion_airport_id' => 'nullable|integer|exists:airports,id',
         ];
     }
 
@@ -39,7 +35,8 @@ class FilterFlightsRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'aircraft_id.exists' => 'Das ausgewählte Flugzeug existiert nicht.',
+            'crew_id.exists' => 'The selected crew is invalid.',
+            'diversion_airport_id.exists' => 'The selected diversion airport is invalid.',
         ];
     }
 }

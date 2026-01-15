@@ -7,91 +7,26 @@
 
         <!-- Create Flight Button -->
         <div class="flex gap-2">
-            @if ($selectedAircraft)
-                <a href="{{ route('planner.flights.create') . '?aircraft_id=' . $selectedAircraft->id }}" class="btn btn-primary">
-                    ✈️ Create new flight for {{ $selectedAircraft->registration_number }}
+            @if (request('aircraft_id'))
+                <a href="{{ route('planner.flights.create') . '?aircraft_id=' . request('aircraft_id') }}" class="btn btn-primary">
+                    Create new flight for {{ $aircrafts->firstWhere('id', request('aircraft_id'))['registration_number'] }}
                 </a>
             @else
                 <a href="{{ route('planner.flights.create') }}" class="btn btn-primary">
-                    ✈️ Create new flight
+                    Create new flight
                 </a>
             @endif
         </div>
 
-        <!-- Filters Section -->
-        <form method="GET" action="{{ route('planner.flights.index') }}" class="card bg-base-200 card-border shadow-lg">
-            <div class="card-body">
-                <fieldset>
-                    <legend class="text-xl font-bold px-2">Filter Flights</legend>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                        <div class="form-control">
-                            <label class="label" for="aircraft_id">
-                                <span class="label-text">Aircraft</span>
-                            </label>
-                            <select name="aircraft_id" id="aircraft_id" class="select select-bordered w-full">
-                                <option value="">All Aircraft</option>
-                                @foreach ($aircrafts as $aircraft)
-                                    <option value="{{ $aircraft['id'] }}" {{ ($selectedAircraft->id ?? '') == $aircraft['id'] ? 'selected' : '' }}>{{ $aircraft['registration_number'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="flight_number">
-                                <span class="label-text">Flight Number</span>
-                            </label>
-                            <input type="text" name="flight_number" id="flight_number" value="{{ request('flight_number') }}" placeholder="e.g., AA123" class="input input-bordered w-full">
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="departure_airport">
-                                <span class="label-text">Departure Airport</span>
-                            </label>
-                            <input type="text" name="departure_airport" id="departure_airport" value="{{ request('departure_airport') }}" placeholder="e.g., KJFK" class="input input-bordered w-full">
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="arrival_airport">
-                                <span class="label-text">Arrival Airport</span>
-                            </label>
-                            <input type="text" name="arrival_airport" id="arrival_airport" value="{{ request('arrival_airport') }}" placeholder="e.g., EGLL" class="input input-bordered w-full">
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="day">
-                                <span class="label-text">Day</span>
-                            </label>
-                            <input type="date" name="day" id="day" value="{{ request('day') }}" class="input input-bordered w-full">
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="month">
-                                <span class="label-text">Month</span>
-                            </label>
-                            <input type="text" name="month" id="month" value="{{ request('month') }}" placeholder="e.g., 2026-01" class="input input-bordered w-full">
-                        </div>
-                        <div class="flex gap-2 items-end col-span-1 sm:col-span-2 md:col-span-3">
-                            <button type="submit" class="btn btn-primary flex-1">Apply Filters</button>
-                            <a href="{{ route('planner.flights.index') }}" class="btn btn-outline flex-1">Clear Filters</a>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-        </form>
+        <x-filter
+            :route="route('planner.flights.index')"
+            :clearRoute="route('planner.flights.index')"
+            :showAircraft="true"
+            :showCrew="false"
+            :showUnassignedOnly="false"
+        />
 
-
-        @if ($errors->any())
-            <div class="alert alert-error shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                    <h3 class="font-bold">Validation Errors</h3>
-                    <ul class="text-sm">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @endif
+        <x-alert />
 
         <!-- Flight Records Table -->
         <div class="card card-border bg-base-100 shadow-lg">
