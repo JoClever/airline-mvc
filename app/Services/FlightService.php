@@ -35,22 +35,6 @@ class FlightService
     }
 
     /**
-     * Enrich flights collection with related data.
-     */
-    public function enrichFlightsWithRelations($flights): Collection|array
-    {
-        foreach ($flights as $flight) {
-            $flight->aircraft_registration_number = $flight->aircraft?->registration_number ?? 'N/A';
-            $flight->departure_airport_icao = $flight->departureAirport?->icao_code ?? 'N/A';
-            $flight->arrival_airport_icao = $flight->arrivalAirport?->icao_code ?? 'N/A';
-            $flight->crew_id = $flight->crew?->id ?? null;
-
-        }
-        
-        return $flights;
-    }
-
-    /**
      * Enrich a single flight with formatted date.
      */
     public function enrichFlightWithDate(Flight $flight): Flight
@@ -60,6 +44,38 @@ class FlightService
         $flight->formatted_arrival_date = date('Y-m-d', strtotime($flight->arrival_time_scheduled));
 
         return $flight;
+    }
+
+    /**
+    * Enrich a single flight with status.
+    */
+    public function enrichFlightWithStatus(Flight $flight): Flight
+    {
+        $now = now();
+
+        if ($flight->status === 'Cancelled') {
+            // Keep cancelled status
+        } elseif ($flight->arrival_time_actual) {
+            $flight->status = 'Landed';
+        } elseif ($flight->diversionAirport()->exists()) {
+            $flight->status = 'Diverted';
+        } elseif ($flight->departure_time_actual) {
+            $flight->status = 'Departed';
+        } elseif (strtotime($flight->departure_time_estimated) >= strtotime($flight->departure_time_scheduled) + 15 * 60) { // 15 minutes delay
+            $flight->status = 'Delayed';
+        } else {
+            $flight->status = 'Scheduled';
+        }
+
+        return $flight;
+    }
+
+    /**
+     * Enrich multiple flights with status.
+     */
+    public function enrichFlightsWithStatus(Collection $flights): Collection|array
+    {
+        return $flights->map(fn($flight) => $this->enrichFlightWithStatus($flight));
     }
 
     /**

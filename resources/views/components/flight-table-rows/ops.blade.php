@@ -5,6 +5,7 @@
     <td>{{ $flight->aircraft->registration_number }}</td>
     <td>{{ $flight->departureAirport->icao_code }}</td>
     <td>{{ $flight->arrivalAirport->icao_code }}</td>
+    <td>{{ $flight->diversionAirport->icao_code ?? '---' }}</td>
     <td>{{ $flight->departure_time_scheduled }}</td>
     <td>{{ $flight->departure_time_estimated ?? '---' }}</td>
     <td>{{ $flight->departure_time_actual ?? '---' }}</td>
@@ -12,21 +13,28 @@
     <td>{{ $flight->arrival_time_estimated ?? '---' }}</td>
     <td>{{ $flight->arrival_time_actual ?? '---' }}</td>
     <td>
-        @if ($flight->status == 'Cancelled')
-            <span class="badge badge-error badge-md">CANCELLED</span>
-        @elseif ($flight->diversion_airport_icao)
-            <span class="badge badge-info badge-md">DIVERTED</span>
-        @elseif ($flight->departure_time_actual)
-            <span class="badge badge-warning badge-md">DEPARTED</span>
-        @elseif ($flight->arrival_time_actual)
-            <span class="badge badge-warning badge-md">LANDED</span>
-        @elseif ($flight->departure_time_estimated || $flight->arrival_time_estimated)
-            <span class="badge badge-warning badge-md">DELAYED</span>
-        @elseif ($flight->status == 'scheduled')
-            <span class="badge badge-success badge-md">ON TIME</span>
-        @else
-            <span class="badge badge-info badge-md">{{ $flight->status }}</span>
-        @endif
+        @switch($flight->status)
+            @case('Cancelled')
+                <span class="badge badge-error badge-md">CANCELLED</span>
+                @break
+            @case('Diverted')
+                <span class="badge badge-error badge-md">DIVERTED</span>
+                @break
+            @case('Scheduled')
+                <span class="badge badge-success badge-md">SCHEDULED</span>
+                @break
+            @case('Delayed')
+                <span class="badge badge-warning badge-md">DELAYED</span>
+                @break
+            @case('Departed')
+                <span class="badge badge-info badge-md">DEPARTED</span>
+                @break
+            @case('Landed')
+                <span class="badge badge-success badge-md">LANDED</span>
+                @break
+            @default
+                <span class="badge badge-info badge-md">{{ $flight->status }}</span>
+        @endswitch
     </td>
     <th>
         <div class="flex gap-2">

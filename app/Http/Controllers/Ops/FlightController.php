@@ -28,7 +28,7 @@ class FlightController extends Controller
 
         $validated = $request->validated();
         $flights = $this->flightService->getFlightsFiltered(filter: $validated);
-        $this->flightService->enrichFlightsWithRelations($flights);
+        $flights = $this->flightService->enrichFlightsWithStatus($flights);
         
         return view('ops.flights.index', compact(
             'flights',
