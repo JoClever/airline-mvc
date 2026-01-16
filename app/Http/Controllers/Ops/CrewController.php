@@ -18,7 +18,14 @@ class CrewController extends Controller
     public function index()
     {
         $crews = $this->crewService->getAllCrews();
-        $this->crewService->enrichCrewsWithFlightStats($crews);
+        $this->crewService->enrichCrewsWithFlightStats(
+            crews: $crews,
+            day: now(),
+            flightsDayLimit: 1,
+            flightsMonthLimit: 2,
+            flightHoursDayLimit: 4,
+            flightHoursMonthLimit: 6,
+        );
         
         return view('ops.crews.index', compact('crews'));
     }

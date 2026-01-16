@@ -18,48 +18,17 @@
                     <table class="table w-full table-pin-rows table-pin-cols">
                         <thead>
                             <tr>
-                                <th>Crew ID</th>
-                                <td>Flights (Today)</td>
-                                <td>Flights (This Month)</td>
-                                <td>Hours (Today)</td>
-                                <td>Hours (This Month)</td>
-                                <th>Actions</th>
+                                <x-crew-table-header />
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($crews as $crew)
-                                <tr class="hover:bg-base-200 whitespace-nowrap">
-                                    <th>
-                                        #{{ $crew['id'] }}
-                                    </th>
-                                    <td>
-                                        <span class="badge badge-info">{{ $crew->flights_day_count }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-info">{{ $crew->flights_month_count }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge">{{ $crew->hours_day ?? '0' }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge">{{ $crew->hours_month ?? '0' }}</span>
-                                    </td>
-                                    <th>
-                                        <form method="GET" action="{{ route($role . '.crews.show', ['crew' => $crew['id']]) }}">
-                                            <button type="submit" class="btn btn-sm btn-info">View Details</button>
-                                        </form>
-                                    </th>
-                                </tr>
+                                <x-crew-table-row :crew="$crew" :role="$role" />
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Crew ID</th>
-                                <td>Flights (Today)</td>
-                                <td>Flights (This Month)</td>
-                                <td>Hours (Today)</td>
-                                <td>Hours (This Month)</td>
-                                <th>Actions</th>
+                                <x-crew-table-header />
                             </tr>
                         </tfoot>
                     </table>

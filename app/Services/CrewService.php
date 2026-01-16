@@ -7,29 +7,50 @@ use Illuminate\Support\Collection;
 
 class CrewService
 {
+    public function countHours(Collection $flights): int
+    {
+        $totalDuration = 0; // in seconds
+
+        foreach ($flights as $flight) {
+            $departure = strtotime($flight->departure_time_scheduled); // Convert to timestamp
+            $arrival = strtotime($flight->arrival_time_scheduled); // Convert to timestamp
+
+            if ($departure && $arrival) {
+                $duration = ($arrival - $departure);
+                $totalDuration += $duration;
+            }
+        }
+
+        return intdiv($totalDuration, 3600); // Convert seconds to hours
+        
+    }
+
     /**
      * Enrich crews with flight statistics.
      */
-    public function enrichCrewsWithFlightStats($crews): Collection|array
+    public function enrichCrewsWithFlightStats($crews, $day, $flightsDayLimit, $flightsMonthLimit, $flightHoursDayLimit, $flightHoursMonthLimit): Collection|array
     {
         foreach ($crews as $crew) {
             $crew->flights_day = $crew->flights()
-                ->whereDate('departure_time_scheduled', now()->toDateString())
+                ->whereDate('departure_time_scheduled', $day->toDateString())
                 ->get();
-            
-            $crew->flights_day_count = $crew->flights()
-                ->whereDate('departure_time_scheduled', now()->toDateString())
-                ->count();
             
             $crew->flights_month = $crew->flights()
-                ->whereMonth('departure_time_scheduled', now()->month)
-                ->whereYear('departure_time_scheduled', now()->year)
+                ->whereMonth('departure_time_scheduled', $day->month)
+                ->whereYear('departure_time_scheduled', $day->year)
                 ->get();
             
-            $crew->flights_month_count = $crew->flights()
-                ->whereMonth('departure_time_scheduled', now()->month)
-                ->whereYear('departure_time_scheduled', now()->year)
-                ->count();
+            $crew->flights_day_count = $crew->flights_day->count();
+            $crew->flights_month_count = $crew->flights_month->count();
+
+            $crew->flights_day_limit = $crew->flights_day_count >= $flightsDayLimit;
+            $crew->flights_month_limit = $crew->flights_month_count >= $flightsMonthLimit;
+
+            $crew->hours_day = $this->countHours($crew->flights_day);
+            $crew->hours_month = $this->countHours($crew->flights_month);
+
+            $crew->hours_day_limit = $crew->hours_day >= $flightHoursDayLimit;
+            $crew->hours_month_limit = $crew->hours_month >= $flightHoursMonthLimit;
         }
         
         return $crews;

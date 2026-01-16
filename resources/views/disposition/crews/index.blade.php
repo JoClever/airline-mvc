@@ -1,1 +1,4 @@
-<x-crew-index role="disposition" :crews="$crews" />
+<x-crew-index
+    role="disposition"
+    :crews="$crews"
+/>
