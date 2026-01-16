@@ -6,17 +6,17 @@
 <form class="card bg-base-100 shadow-lg m-auto">
     <div class="card-body">
         
-        <x-show-form.planner :flight="$flight" />
+        <x-flight-show-form.planner :flight="$flight" />
 
         @if (($type) === 'ops' || ($type) === 'disposition')
 
-        <x-show-form.disposition :flight="$flight" />
+        <x-flight-show-form.disposition :flight="$flight" />
 
         @endif
 
         @if (($type ?? null) === 'ops')
 
-        <x-show-form.ops :flight="$flight" />
+        <x-flight-show-form.ops :flight="$flight" />
 
         @endif
 

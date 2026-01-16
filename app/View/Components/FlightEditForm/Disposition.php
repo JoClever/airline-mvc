@@ -1,18 +1,14 @@
 <?php
 
-namespace App\View\Components\EditForm;
+namespace App\View\Components\FlightEditForm;
 
 use Closure;
-use App\Models\Aircraft;
-use App\Models\Airport;
 use App\Models\Crew;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Ops extends Component
+class Disposition extends Component
 {
-    public $aircrafts;
-    public $airports;
     public $crews;
 
     /**
@@ -20,8 +16,6 @@ class Ops extends Component
      */
     public function __construct()
     {
-        $this->aircrafts = Aircraft::all();
-        $this->airports = Airport::all();
         $this->crews = Crew::all();
     }
 
@@ -30,6 +24,6 @@ class Ops extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.edit-form.ops');
+        return view('components.flight-edit-form.disposition');
     }
 }

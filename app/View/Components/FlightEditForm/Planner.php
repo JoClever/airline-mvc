@@ -1,22 +1,25 @@
 <?php
 
-namespace App\View\Components\EditForm;
+namespace App\View\Components\FlightEditForm;
 
 use Closure;
-use App\Models\Crew;
+use App\Models\Aircraft;
+use App\Models\Airport;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Disposition extends Component
+class Planner extends Component
 {
-    public $crews;
-
+    public $aircrafts;
+    public $airports;
+    
     /**
      * Create a new component instance.
      */
     public function __construct()
     {
-        $this->crews = Crew::all();
+        $this->aircrafts = Aircraft::all();
+        $this->airports = Airport::all();
     }
 
     /**
@@ -24,6 +27,6 @@ class Disposition extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.edit-form.disposition');
+        return view('components.flight-edit-form.planner');
     }
 }

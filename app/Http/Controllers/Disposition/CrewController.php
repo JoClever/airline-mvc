@@ -28,6 +28,7 @@ class CrewController extends Controller
      */
     public function show(Crew $crew)
     {
+        $crew->load('flights');
         return view('disposition.crews.show', compact('crew'));
     }
 }

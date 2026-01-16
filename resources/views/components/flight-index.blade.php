@@ -24,7 +24,7 @@
             <x-flight-create-button />
         @endif
 
-        <x-filter 
+        <x-flight-filter
             :route="route($role . '.flights.index')"
             :clearRoute="route($role . '.flights.index')"
             :showAircraft="$filterShowAircraft"

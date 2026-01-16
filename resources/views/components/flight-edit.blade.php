@@ -13,7 +13,7 @@
 
         <x-alert />
 
-        <x-edit-form 
+        <x-flight-edit-form
             :type="$role"
             :flight="$flight"
         />
