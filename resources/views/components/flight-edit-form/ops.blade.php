@@ -5,31 +5,51 @@
     <div class="space-y-4 mt-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="form-control">
-                <label class="label" for="etd">
+                <label class="label" for="departure_time_estimated">
                     <span class="label-text">ETD</span>
                 </label>
-                <input type="datetime-local" id="etd" name="etd" value="{{ $flight->departure_time_estimated }}" class="input input-bordered w-full">
+                <input type="datetime-local" id="departure_time_estimated" name="departure_time_estimated" value="{{ $flight->departure_time_estimated }}" class="input input-bordered w-full">
+                @error('departure_time_estimated')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror
             </div>
             <div class="form-control">
-                <label class="label" for="eta">
+                <label class="label" for="arrival_time_estimated">
                     <span class="label-text">ETA</span>
                 </label>
-                <input type="datetime-local" id="eta" name="eta" value="{{ $flight->arrival_time_estimated }}" class="input input-bordered w-full">
+                <input type="datetime-local" id="arrival_time_estimated" name="arrival_time_estimated" value="{{ $flight->arrival_time_estimated }}" class="input input-bordered w-full">
+                @error('arrival_time_estimated')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="form-control">
-                <label class="label" for="atd">
+                <label class="label" for="departure_time_actual">
                     <span class="label-text">ATD</span>
                 </label>
-                <input type="datetime-local" id="atd" name="atd" value="{{ $flight->departure_time_actual }}" class="input input-bordered w-full">
+                <input type="datetime-local" id="departure_time_actual" name="departure_time_actual" value="{{ $flight->departure_time_actual }}" class="input input-bordered w-full">
+                @error('departure_time_actual')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror
             </div>
             <div class="form-control">
-                <label class="label" for="ata">
+                <label class="label" for="arrival_time_actual">
                     <span class="label-text">ATA</span>
                 </label>
-                <input type="datetime-local" id="ata" name="ata" value="{{ $flight->arrival_time_actual }}" class="input input-bordered w-full">
+                <input type="datetime-local" id="arrival_time_actual" name="arrival_time_actual" value="{{ $flight->arrival_time_actual }}" class="input input-bordered w-full">
+                @error('arrival_time_actual')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror  
             </div>
         </div>
 

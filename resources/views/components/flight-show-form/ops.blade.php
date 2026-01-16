@@ -6,28 +6,28 @@
                 <label class="label" for="etd">
                     <span class="label-text">ETD</span>
                 </label>
-                <input type="datetime-local" id="etd" name="etd" value="{{ $flight->etd }}" class="input input-bordered w-full" disabled>
+                <input type="datetime-local" id="departure_time_estimated" name="departure_time_estimated" value="{{ $flight->departure_time_estimated }}" class="input input-bordered w-full" disabled>
             </div>
             <div class="form-control">
-                <label class="label" for="eta">
+                <label class="label" for="arrival_time_estimated">
                     <span class="label-text">ETA</span>
                 </label>
-                <input type="datetime-local" id="eta" name="eta" value="{{ $flight->eta }}" class="input input-bordered w-full" disabled>
+                <input type="datetime-local" id="arrival_time_estimated" name="arrival_time_estimated" value="{{ $flight->arrival_time_estimated }}" class="input input-bordered w-full" disabled>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="form-control">
-                <label class="label" for="atd">
+                <label class="label" for="departure_time_actual">
                     <span class="label-text">ATD</span>
                 </label>
-                <input type="datetime-local" id="atd" name="atd" value="{{ $flight->atd }}" class="input input-bordered w-full" disabled>
+                <input type="datetime-local" id="departure_time_actual" name="departure_time_actual" value="{{ $flight->departure_time_actual }}" class="input input-bordered w-full" disabled>
             </div>
             <div class="form-control">
-                <label class="label" for="ata">
+                <label class="label" for="arrival_time_actual">
                     <span class="label-text">ATA</span>
                 </label>
-                <input type="datetime-local" id="ata" name="ata" value="{{ $flight->ata }}" class="input input-bordered w-full" disabled>
+                <input type="datetime-local" id="arrival_time_actual" name="arrival_time_actual" value="{{ $flight->arrival_time_actual }}" class="input input-bordered w-full" disabled>
             </div>
         </div>
 

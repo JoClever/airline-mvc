@@ -2,6 +2,7 @@
 <td>A/C</td>
 <td>Orig</td>
 <td>Dest</td>
+<td>Div</td>
 <td>STD</td>
 <td>ETD</td>
 <td>ATD</td>

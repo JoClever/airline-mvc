@@ -23,6 +23,10 @@ class UpdateOpsFlightRequest extends FormRequest
     {
         return [
             'crew_id' => 'nullable|integer|exists:crews,id',
+            'departure_time_estimated' => 'required|date',
+            'arrival_time_estimated' => 'nullable|date',
+            'departure_time_actual' => 'nullable|date',
+            'arrival_time_actual' => 'nullable|date',
             'diversion_airport_id' => 'nullable|integer|exists:airports,id',
             'transfer_crew_ids' => 'nullable|array',
             'transfer_crew_ids.*' => 'integer|exists:crews,id',
