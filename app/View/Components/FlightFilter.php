@@ -9,7 +9,7 @@ use App\Models\Crew;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Filter extends Component
+class FlightFilter extends Component
 {
     public $aircrafts;
     public $airports;
@@ -40,6 +40,6 @@ class Filter extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.filter');
+        return view('components.flight-filter');
     }
 };
