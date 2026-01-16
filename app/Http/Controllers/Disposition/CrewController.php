@@ -17,7 +17,7 @@ class CrewController extends Controller
      */
     public function index()
     {
-        $crews = $this->crewService->getAllCrews();
+        $crews = Crew::all();
         $this->crewService->enrichCrewsWithFlightStats(
             crews: $crews,
             day: now(),
@@ -35,7 +35,21 @@ class CrewController extends Controller
      */
     public function show(Crew $crew)
     {
-        $crew = $this->crewService->getCrewWithRelations($crew, ['flights']);
+        $this->crewService->enrichCrewWithFlightStats(
+            crew: $crew,
+            day: now(),
+            flightsDayLimit: 1,
+            flightsMonthLimit: 2,
+            flightHoursDayLimit: 4,
+            flightHoursMonthLimit: 6,
+        );
+
+        $warnings = $this->crewService->getCrewLimitWarnings($crew);
+        
+        if (!empty($warnings)) {
+            session()->flash('warnings', $warnings);
+        }
+
         return view('disposition.crews.show', compact('crew'));
     }
 }
