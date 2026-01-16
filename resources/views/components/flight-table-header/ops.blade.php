@@ -1,0 +1,12 @@
+<th>Flt</th>
+<td>A/C</td>
+<td>Orig</td>
+<td>Dest</td>
+<td>STD</td>
+<td>ETD</td>
+<td>ATD</td>
+<td>STA</td>
+<td>ETA</td>
+<td>ATA</td>
+<td>Status</td>
+<th>Actions</th>

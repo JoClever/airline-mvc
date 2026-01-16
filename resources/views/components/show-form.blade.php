@@ -1,4 +1,7 @@
-@props(['flight', 'type' => null])
+@props([
+    'flight',
+    'type' => null
+])
 
 <form class="card bg-base-100 shadow-lg m-auto">
     <div class="card-body">
@@ -18,9 +21,9 @@
         @endif
 
         <div class="card-actions justify-between pt-4">
-            <a href="{{ route('ops.flights.index') }}" class="btn btn-outline">Back to List</a>
+            <a href="{{ route($type . '.flights.index') }}" class="btn btn-outline">Back to List</a>
             <div class="flex gap-2">
-                <a href="{{ route('ops.flights.edit', $flight) }}" class="btn btn-warning">Edit Flight</a>
+                <a href="{{ route($type . '.flights.edit', $flight) }}" class="btn btn-warning">Edit Flight</a>
             </div>
         </div>
     </div>

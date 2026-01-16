@@ -1,6 +1,9 @@
-@props(['flight', 'type' => null, 'updateRoute', 'cancelRoute'])
+@props([
+    'flight',
+    'type' => null,
+])
 
-<form method="POST" action="{{ $updateRoute }}" class="card bg-base-100 shadow-lg m-auto">
+<form method="POST" action="{{ route($type . '.flights.update', ['flight' => $flight->id]) }}" class="card bg-base-100 shadow-lg m-auto">
     @csrf
     @method('PUT')
     <div class="card-body">
@@ -27,7 +30,7 @@
         @endif
 
         <div class="card-actions justify-between pt-4">
-            <a href="{{ $cancelRoute }}" class="btn btn-outline">Cancel</a>
+            <a href="{{ route($type . '.flights.show', ['flight' => $flight->id]) }}" class="btn btn-outline">Cancel</a>
             <button type="submit" class="btn btn-warning">Save Changes</button>
         </div>
     </div>
