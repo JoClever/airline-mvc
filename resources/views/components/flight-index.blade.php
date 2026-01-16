@@ -12,7 +12,7 @@
 @endphp
 
 <x-layout>
-    <div class="max-w-6xl mx-auto space-y-6">
+    <div class="{{ $role == 'ops' ? '' : 'max-w-7xl' }} mx-auto space-y-6">
         <div>
             <h1 class="text-4xl font-bold mb-2">{{ $title }}</h1>
             @if($subtitle)
@@ -56,7 +56,7 @@
                     </table>
                 </div>
                 @if($flights->isEmpty())
-                    <p class="text-center py-4 text-gray-600">{{ $emptyText }}</p>
+                    <p class="text-center py-4 text-gray-600">No flights found.</p>
                 @endif
             </div>
         </div>
