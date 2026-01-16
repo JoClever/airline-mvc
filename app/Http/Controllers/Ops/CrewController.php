@@ -38,11 +38,17 @@ class CrewController extends Controller
         $this->crewService->enrichCrewWithFlightStats(
             crew: $crew,
             day: now(),
-            flightsDayLimit: 1,
-            flightsMonthLimit: 2,
-            flightHoursDayLimit: 4,
-            flightHoursMonthLimit: 6,
         );
+
+        $crew->load([
+            'flights.aircraft',
+            'flights.departureAirport',
+            'flights.arrivalAirport',
+            'transferFlights.aircraft',
+            'transferFlights.departureAirport',
+            'transferFlights.arrivalAirport',
+        ]);
+
         return view('ops.crews.show', compact('crew'));
     }
 }

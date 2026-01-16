@@ -9,3 +9,21 @@
         </div>
     </div>
 </fieldset>
+
+<fieldset class="mt-4">
+    <legend class="card-title">Crew Transfers</legend>
+    <div class="space-y-3 mt-4">
+        <div class="form-control">
+            <label class="label" for="transfer_crew_ids">
+                <span class="label-text">Transfer Crews</span>
+            </label>
+            <select name="transfer_crew_ids[]" id="transfer_crew_ids" multiple class="select select-bordered w-full @error('transfer_crew_ids') input-error @enderror" disabled>
+                @foreach ($flight->crewTransfers as $crew)
+                    <option value="{{ $crew->id }}">
+                        Crew {{ $crew->id }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+</fieldset>

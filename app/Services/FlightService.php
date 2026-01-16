@@ -125,6 +125,8 @@ class FlightService
         $flight->update([
             'crew_id' => $data['crew_id'] ?? null,
         ]);
+
+        $this->syncCrewTransfers($flight, $data['transfer_crew_ids'] ?? []);
         
         return $flight;
     }
@@ -142,7 +144,17 @@ class FlightService
             'arrival_time_actual' => $data['arrival_time_actual'] ?? null,
             'crew_id' => $data['crew_id'] ?? null,
         ]);
+
+        $this->syncCrewTransfers($flight, $data['transfer_crew_ids'] ?? []);
         
         return $flight;
+    }
+
+    /**
+     * Sync transfer crews for a flight.
+     */
+    private function syncCrewTransfers(Flight $flight, array $crewIds): void
+    {
+        $flight->crewTransfers()->sync($crewIds);
     }
 }

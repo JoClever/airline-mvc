@@ -46,7 +46,8 @@ class FlightController extends Controller
             'departureAirport',
             'arrivalAirport',
             'aircraft',
-            'crew'
+            'crew',
+            'crewTransfers',
         ]);
 
         return view('disposition.flights.show', compact('flight'));

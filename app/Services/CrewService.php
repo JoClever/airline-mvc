@@ -28,8 +28,20 @@ class CrewService
     /**
      * Enrich crews with flight statistics.
      */
-    public function enrichCrewWithFlightStats($crew, $day, $flightsDayLimit, $flightsMonthLimit, $flightHoursDayLimit, $flightHoursMonthLimit): Crew
+    public function enrichCrewWithFlightStats(
+        Crew $crew,
+        $day,
+        $flightsDayLimit = null,
+        $flightsMonthLimit = null,
+        $flightHoursDayLimit = null,
+        $flightHoursMonthLimit = null
+    ): Crew
     {
+        $flightsDayLimit ??= (int) env('CREW_MAX_FLIGHTS_DAY') ?? 1;
+        $flightsMonthLimit ??= (int) env('CREW_MAX_FLIGHTS_MONTH') ?? 2;
+        $flightHoursDayLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_DAY') ?? 4;
+        $flightHoursMonthLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_MONTH') ?? 6;
+
         $crew->flights_day = $crew->flights()
             ->whereDate('departure_time_scheduled', $day->toDateString())
             ->get();
@@ -42,14 +54,14 @@ class CrewService
         $crew->flights_day_count = $crew->flights_day->count();
         $crew->flights_month_count = $crew->flights_month->count();
 
-        $crew->flights_day_limit = $crew->flights_day_count >= $flightsDayLimit;
-        $crew->flights_month_limit = $crew->flights_month_count >= $flightsMonthLimit;
+        $crew->flights_day_limit = $crew->flights_day_count > $flightsDayLimit;
+        $crew->flights_month_limit = $crew->flights_month_count > $flightsMonthLimit;
 
         $crew->hours_day = $this->countHours($crew->flights_day);
         $crew->hours_month = $this->countHours($crew->flights_month);
 
-        $crew->hours_day_limit = $crew->hours_day >= $flightHoursDayLimit;
-        $crew->hours_month_limit = $crew->hours_month >= $flightHoursMonthLimit;
+        $crew->hours_day_limit = $crew->hours_day > $flightHoursDayLimit;
+        $crew->hours_month_limit = $crew->hours_month > $flightHoursMonthLimit;
         
         return $crew;
     }
@@ -57,7 +69,14 @@ class CrewService
     /**
      * Enrich crews with flight statistics.
      */
-    public function enrichCrewsWithFlightStats($crews, $day, $flightsDayLimit, $flightsMonthLimit, $flightHoursDayLimit, $flightHoursMonthLimit): Collection|array
+    public function enrichCrewsWithFlightStats(
+        Collection $crews,
+        $day,
+        $flightsDayLimit = null,
+        $flightsMonthLimit = null,
+        $flightHoursDayLimit = null,
+        $flightHoursMonthLimit = null
+    ): Collection
     {
         foreach ($crews as $crew) {
             $this->enrichCrewWithFlightStats(

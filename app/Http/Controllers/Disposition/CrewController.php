@@ -38,11 +38,18 @@ class CrewController extends Controller
         $this->crewService->enrichCrewWithFlightStats(
             crew: $crew,
             day: now(),
-            flightsDayLimit: 1,
-            flightsMonthLimit: 2,
-            flightHoursDayLimit: 4,
-            flightHoursMonthLimit: 6,
         );
+
+        $crew->load([
+            'flights.departureAirport',
+            'flights.arrivalAirport',
+            'flights.aircraft',
+            'flights.crewTransfers',
+            'transferFlights.departureAirport',
+            'transferFlights.arrivalAirport',
+            'transferFlights.aircraft',
+            'transferFlights.crewTransfers',
+        ]);
 
         $warnings = $this->crewService->getCrewLimitWarnings($crew);
         

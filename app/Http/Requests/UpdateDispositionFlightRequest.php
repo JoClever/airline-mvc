@@ -22,7 +22,9 @@ class UpdateDispositionFlightRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'crew_id' => 'nullable|integer|exists:crews,id'
+            'crew_id' => 'nullable|integer|exists:crews,id',
+            'transfer_crew_ids' => 'nullable|array',
+            'transfer_crew_ids.*' => 'integer|exists:crews,id',
         ];
     }
 
@@ -35,6 +37,7 @@ class UpdateDispositionFlightRequest extends FormRequest
     {
         return [
             'crew_id.exists' => 'The selected crew is invalid.',
+            'transfer_crew_ids.*.exists' => 'One or more selected transfer crews are invalid.',
         ];
     }
 }

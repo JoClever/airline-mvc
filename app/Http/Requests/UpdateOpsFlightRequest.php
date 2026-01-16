@@ -24,6 +24,8 @@ class UpdateOpsFlightRequest extends FormRequest
         return [
             'crew_id' => 'nullable|integer|exists:crews,id',
             'diversion_airport_id' => 'nullable|integer|exists:airports,id',
+            'transfer_crew_ids' => 'nullable|array',
+            'transfer_crew_ids.*' => 'integer|exists:crews,id',
         ];
     }
 
@@ -37,6 +39,7 @@ class UpdateOpsFlightRequest extends FormRequest
         return [
             'crew_id.exists' => 'The selected crew is invalid.',
             'diversion_airport_id.exists' => 'The selected diversion airport is invalid.',
+            'transfer_crew_ids.*.exists' => 'One or more selected transfer crews are invalid.',
         ];
     }
 }

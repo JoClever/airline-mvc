@@ -16,5 +16,7 @@
         <x-crew-show-form :role="$role" :crew="$crew" />
 
         <x-crew-show-flights :role="$role" :crew="$crew" />
+
+        <x-crew-show-transfers :role="$role" :crew="$crew" />
     </div>
 </x-layout>
