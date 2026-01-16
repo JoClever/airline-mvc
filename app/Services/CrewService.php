@@ -78,18 +78,14 @@ class CrewService
         $flightHoursMonthLimit = null
     ): Collection
     {
-        foreach ($crews as $crew) {
-            $this->enrichCrewWithFlightStats(
-                crew: $crew,
-                day: $day,
-                flightsDayLimit: $flightsDayLimit,
-                flightsMonthLimit: $flightsMonthLimit,
-                flightHoursDayLimit: $flightHoursDayLimit,
-                flightHoursMonthLimit: $flightHoursMonthLimit,
-            );
-        }
-        
-        return $crews;
+        return $crews->map(fn (Crew $crew) => $this->enrichCrewWithFlightStats(
+            $crew,
+            $day,
+            $flightsDayLimit,
+            $flightsMonthLimit,
+            $flightHoursDayLimit,
+            $flightHoursMonthLimit
+        ));
     }
 
     /**
