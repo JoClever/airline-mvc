@@ -123,7 +123,7 @@ class CrewService
      * Check for crew routing, timing issues, and limit violations.
      * Returns array of issues with type, description, and affected crew/flights.
      */
-    public function checkCrewIssues(): array
+    public function checkCrewIssues(bool $includeLiveTimes = false): array
     {
         $issues = [];
         $crews = Crew::all();
@@ -180,13 +180,49 @@ class CrewService
 
                 if ($nextDeparture <= $currentArrival) {
                     $issues[] = [
-                        'type' => 'Time Collision',
+                        'type' => 'Time Collision (Scheduled)',
                         'description' => "Crew #{$crew->id} lands at " . date('H:i', $currentArrival) . " but next flight departs at " . date('H:i', $nextDeparture),
                         'flight_1' => $currentFlight,
                         'flight_2' => $nextFlight,
                         'crew' => $crew,
                         'severity' => 'error',
                     ];
+                }
+
+                if ($includeLiveTimes) {
+                    // Check estimated time collision
+                    if ($currentFlight->arrival_time_estimated && $nextFlight->departure_time_estimated) {
+                        $currentETA = strtotime($currentFlight->arrival_time_estimated);
+                        $nextETD = strtotime($nextFlight->departure_time_estimated);
+
+                        if ($nextETD <= $currentETA) {
+                            $issues[] = [
+                                'type' => 'Time Collision (Estimated)',
+                                'description' => "Crew #{$crew->id} estimated to land at " . date('H:i', $currentETA) . " but next flight estimated to depart at " . date('H:i', $nextETD),
+                                'flight_1' => $currentFlight,
+                                'flight_2' => $nextFlight,
+                                'crew' => $crew,
+                                'severity' => 'warning',
+                            ];
+                        }
+                    }
+
+                    // Check actual time collision
+                    if ($currentFlight->arrival_time_actual && $nextFlight->departure_time_actual) {
+                        $currentATA = strtotime($currentFlight->arrival_time_actual);
+                        $nextATD = strtotime($nextFlight->departure_time_actual);
+
+                        if ($nextATD <= $currentATA) {
+                            $issues[] = [
+                                'type' => 'Time Collision (Actual)',
+                                'description' => "Crew #{$crew->id} actually landed at " . date('H:i', $currentATA) . " but next flight departed at " . date('H:i', $nextATD),
+                                'flight_1' => $currentFlight,
+                                'flight_2' => $nextFlight,
+                                'crew' => $crew,
+                                'severity' => 'error',
+                            ];
+                        }
+                    }
                 }
             }
 

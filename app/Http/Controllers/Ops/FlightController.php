@@ -7,6 +7,7 @@ use App\Models\Flight;
 use App\Models\Airport;
 use App\Models\Aircraft;
 use App\Services\FlightService;
+use App\Services\CrewService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FilterFlightsRequest;
 use App\Http\Requests\UpdateOpsFlightRequest;
@@ -14,7 +15,8 @@ use App\Http\Requests\UpdateOpsFlightRequest;
 class FlightController extends Controller
 {
     public function __construct(
-        private FlightService $flightService
+        private FlightService $flightService,
+        private CrewService $crewService
     ) {}
 
     /**
@@ -30,11 +32,17 @@ class FlightController extends Controller
         $flights = $this->flightService->getFlightsFiltered(filter: $validated);
         $flights = $this->flightService->enrichFlightsWithStatus($flights);
         
+        // Check for aircraft and crew routing, timing, and limit issues
+        $aircraftIssues = $this->flightService->checkAircraftIssues(includeLiveTimes: true);
+        $crewIssues = $this->crewService->checkCrewIssues(includeLiveTimes: true);
+        $issues = array_merge($aircraftIssues, $crewIssues);
+        
         return view('ops.flights.index', compact(
             'flights',
             'aircrafts',
             'airports',
             'crews',
+            'issues',
         ));
     }
 

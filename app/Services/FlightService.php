@@ -178,7 +178,7 @@ class FlightService
      * Check for aircraft routing and timing issues.
      * Returns array of issues with type, description, and affected flights.
      */
-    public function checkAircraftIssues(): array
+    public function checkAircraftIssues(bool $includeLiveTimes = false): array
     {
         $issues = [];
         $aircrafts = Aircraft::all();
@@ -217,13 +217,63 @@ class FlightService
 
                 if ($nextDeparture - $currentArrival <= 60 * 60) { // Less than or equal to 60 minutes turnaround  
                     $issues[] = [
-                        'type' => 'Time Collision',
+                        'type' => 'Time Collision (Scheduled)',
                         'description' => "Aircraft {$aircraft->registration_number} lands at " . date('H:i', $currentArrival) . " but next flight departs at " . date('H:i', $nextDeparture),
                         'flight_1' => $currentFlight,
                         'flight_2' => $nextFlight,
                         'aircraft' => $aircraft,
                         'severity' => 'error',
                     ];
+                }
+
+                if ($includeLiveTimes) {
+                    // Check estimated time collision
+                    if ($currentFlight->arrival_time_estimated && $nextFlight->departure_time_estimated) {
+                        $currentETA = strtotime($currentFlight->arrival_time_estimated);
+                        $nextETD = strtotime($nextFlight->departure_time_estimated);
+
+                        if ($nextETD - $currentETA <= 60 * 60) {
+                            $issues[] = [
+                                'type' => 'Time Collision (Estimated)',
+                                'description' => "Aircraft {$aircraft->registration_number} estimated to land at " . date('H:i', $currentETA) . " but next flight estimated to depart at " . date('H:i', $nextETD),
+                                'flight_1' => $currentFlight,
+                                'flight_2' => $nextFlight,
+                                'aircraft' => $aircraft,
+                                'severity' => 'warning',
+                            ];
+                        }
+                    } elseif ($currentFlight->arrival_time_estimated && $nextFlight->departure_time_scheduled) {
+                        $currentETA = strtotime($currentFlight->arrival_time_estimated);
+                        $nextETD = strtotime($nextFlight->departure_time_scheduled);
+
+                        if ($nextETD - $currentETA <= 60 * 60) {
+                            $issues[] = [
+                                'type' => 'Time Collision (Estimated vs Scheduled)',
+                                'description' => "Aircraft {$aircraft->registration_number} estimated to land at " . date('H:i', $currentETA) . " but next flight scheduled to depart at " . date('H:i', $nextETD),
+                                'flight_1' => $currentFlight,
+                                'flight_2' => $nextFlight,
+                                'aircraft' => $aircraft,
+                                'severity' => 'warning',
+                            ];
+                        }
+                    }
+
+                    // Check actual time collision
+                    if ($currentFlight->arrival_time_actual && $nextFlight->departure_time_actual) {
+                        $currentATA = strtotime($currentFlight->arrival_time_actual);
+                        $nextATD = strtotime($nextFlight->departure_time_actual);
+
+                        if ($nextATD - $currentATA <= 60 * 60) {
+                            $issues[] = [
+                                'type' => 'Time Collision (Actual)',
+                                'description' => "Aircraft {$aircraft->registration_number} actually landed at " . date('H:i', $currentATA) . " but next flight departed at " . date('H:i', $nextATD),
+                                'flight_1' => $currentFlight,
+                                'flight_2' => $nextFlight,
+                                'aircraft' => $aircraft,
+                                'severity' => 'error',
+                            ];
+                        }
+                    }
                 }
             }
         }
