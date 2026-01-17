@@ -20,7 +20,7 @@
         </h2>
         
         <div class="overflow-x-auto mt-4">
-            <table class="table table-pin-rows table-pin-cols w-full">
+            <table class="table table-pin-rows table-pin-cols w-full {{ $role == 'ops' ? 'table-sm' : '' }}">
                 <thead>
                     <tr>
                         <th>Issue Type</th>
@@ -39,7 +39,7 @@
                     @foreach($issues as $issue)
                     <tr class="hover:bg-base-200">
                         <th>
-                            <span class="badge {{ $issue['severity'] === 'error' ? 'badge-error' : 'badge-warning' }} badge-lg whitespace-nowrap">
+                            <span class="badge {{ $issue['severity'] === 'error' ? 'badge-error' : 'badge-warning' }} {{ $role == 'ops' ? '' : 'badge-lg' }} whitespace-nowrap">
                                 {{ $issue['type'] }}
                             </span>
                         </th>

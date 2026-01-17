@@ -3,7 +3,7 @@
     <div class="card-body">
         <fieldset>
             <legend class="text-xl font-bold px-2">Filter Flights</legend>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
                 @if ($showAircraft ?? false)
                     <div class="form-control">
                         <label class="label" for="aircraft_id">
@@ -78,7 +78,7 @@
                         </label>
                     </div>
                 @endif
-                <div class="flex gap-2 items-end col-span-1 sm:col-span-2 md:col-span-3">
+                <div class="flex gap-2 items-end col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4">
                     <button type="submit" class="btn btn-primary flex-1">Apply Filters</button>
                     <a href="{{ $clearRoute }}" class="btn btn-outline flex-1">Clear Filters</a>
                 </div>

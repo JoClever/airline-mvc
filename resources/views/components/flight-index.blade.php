@@ -43,7 +43,7 @@
                     Flight Records
                 </h2>
                 <div class="overflow-x-auto mt-4">
-                    <table class="table w-full table-pin-rows table-pin-cols">
+                    <table class="table w-full table-pin-rows table-pin-cols {{ $role == 'ops' ? 'table-sm' : '' }}">
                         <thead>
                             <tr>
                                 @include('components.flight-table-header.' . $role)
