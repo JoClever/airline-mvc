@@ -3,6 +3,7 @@
     'title',
     'subtitle' => null,
     'flights' => [],
+    'issues' => [],
 ])
 
 @php
@@ -33,6 +34,8 @@
         />
 
         <x-alert />
+
+        <x-flight-issues :issues="$issues" :role="$role" />
 
         <div class="card bg-base-100 shadow-lg">
             <div class="card-body">

@@ -3,4 +3,5 @@
     title="Flight Planning"
     subtitle="Manage and plan flights"
     :flights="$flights"
+    :issues="$issues"
 />

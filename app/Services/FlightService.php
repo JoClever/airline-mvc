@@ -173,4 +173,59 @@ class FlightService
     {
         $flight->crewTransfers()->sync($crewIds);
     }
+
+    /**
+     * Check for aircraft routing and timing issues.
+     * Returns array of issues with type, description, and affected flights.
+     */
+    public function checkAircraftIssues(): array
+    {
+        $issues = [];
+        $aircrafts = Aircraft::all();
+
+        foreach ($aircrafts as $aircraft) {
+            // Get flights for this aircraft ordered by departure time
+            $flights = Flight::where('aircraft_id', $aircraft->id)
+                ->orderBy('departure_time_scheduled')
+                ->with(['departureAirport', 'arrivalAirport'])
+                ->get();
+
+            if ($flights->count() < 2) {
+                continue; // Need at least 2 flights to check for issues
+            }
+
+            // Check each consecutive pair of flights
+            for ($i = 0; $i < $flights->count() - 1; $i++) {
+                $currentFlight = $flights[$i];
+                $nextFlight = $flights[$i + 1];
+
+                // Check airport consistency (current arrival should match next departure)
+                if ($currentFlight->arrival_airport_id !== $nextFlight->departure_airport_id) {
+                    $issues[] = [
+                        'type' => 'Airport Inconsistency',
+                        'description' => "Aircraft {$aircraft->registration_number} arrives at {$currentFlight->arrivalAirport->icao_code} but next flight departs from {$nextFlight->departureAirport->icao_code}",
+                        'flight_1' => $currentFlight,
+                        'flight_2' => $nextFlight,
+                        'severity' => 'error',
+                    ];
+                }
+
+                // Check time collision (next departure should be after current arrival)
+                $currentArrival = strtotime($currentFlight->arrival_time_scheduled);
+                $nextDeparture = strtotime($nextFlight->departure_time_scheduled);
+
+                if ($nextDeparture - $currentArrival <= 60 * 60) { // Less than or equal to 60 minutes turnaround  
+                    $issues[] = [
+                        'type' => 'Time Collision',
+                        'description' => "Aircraft {$aircraft->registration_number} lands at " . date('H:i', $currentArrival) . " but next flight departs at " . date('H:i', $nextDeparture),
+                        'flight_1' => $currentFlight,
+                        'flight_2' => $nextFlight,
+                        'severity' => 'error',
+                    ];
+                }
+            }
+        }
+
+        return $issues;
+    }
 }

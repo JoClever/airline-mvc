@@ -29,10 +29,13 @@ class FlightController extends Controller
         $validated = $request->validated();
         $flights = $this->flightService->getFlightsFiltered(filter: $validated);
         
+        $issues = $this->flightService->checkAircraftIssues();
+        
         return view('planner.flights.index', compact(
             'flights',
             'aircrafts',
             'airports',
+            'issues',
         ));
     }
 
