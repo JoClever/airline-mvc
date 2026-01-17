@@ -39,7 +39,10 @@
 
         <div class="card bg-base-100 shadow-lg">
             <div class="card-body">
-                <div class="overflow-x-auto">
+                <h2 class="card-title">
+                    Flight Records
+                </h2>
+                <div class="overflow-x-auto mt-4">
                     <table class="table w-full table-pin-rows table-pin-cols">
                         <thead>
                             <tr>
