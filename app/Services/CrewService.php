@@ -129,10 +129,10 @@ class CrewService
         $crews = Crew::all();
 
         // Limits for checking
-        $flightsDayLimit ??= (int) env('CREW_MAX_FLIGHTS_DAY') ?? 4;
-        $flightsMonthLimit ??= (int) env('CREW_MAX_FLIGHTS_MONTH') ?? 20;
-        $flightHoursDayLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_DAY') ?? 8;
-        $flightHoursMonthLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_MONTH') ?? 60;
+        $flightsDayLimit = (int) config('custom.crew_max_flights_day') ?? 4;
+        $flightsMonthLimit = (int) config('custom.crew_max_flights_month') ?? 20;
+        $flightHoursDayLimit = (int) config('custom.crew_max_flight_hours_day') ?? 8;
+        $flightHoursMonthLimit = (int) config('custom.crew_max_flight_hours_month') ?? 60;
 
         foreach ($crews as $crew) {
             // Get all flights for this crew: both assigned flights and transfer flights
