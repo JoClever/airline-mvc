@@ -82,5 +82,11 @@
     <main class="p-4">
         {{ $slot }}
     </main>
+
+    <footer class="footer footer-center p-4 bg-base-200 text-base-content">
+        <div>
+            <p>&copy; {{ date('Y') }} {{ config('app.name', 'Airline') }}. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
