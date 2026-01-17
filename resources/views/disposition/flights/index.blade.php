@@ -3,4 +3,5 @@
     title="Flight Disposition"
     subtitle="Manage crew assignments"
     :flights="$flights"
+    :issues="$issues"
 />

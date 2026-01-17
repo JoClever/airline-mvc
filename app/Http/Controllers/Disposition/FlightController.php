@@ -6,6 +6,7 @@ use App\Models\Crew;
 use App\Models\Flight;
 use App\Models\Airport;
 use App\Services\FlightService;
+use App\Services\CrewService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FilterFlightsRequest;
 use App\Http\Requests\UpdateDispositionFlightRequest;
@@ -13,7 +14,8 @@ use App\Http\Requests\UpdateDispositionFlightRequest;
 class FlightController extends Controller
 {
     public function __construct(
-        private FlightService $flightService
+        private FlightService $flightService,
+        private CrewService $crewService
     ) {}
 
     /**
@@ -27,10 +29,14 @@ class FlightController extends Controller
         $validated = $request->validated();
         $flights = $this->flightService->getFlightsFiltered(filter: $validated);
         
+        // Check for crew routing, timing, and limit issues
+        $issues = $this->crewService->checkCrewIssues();
+        
         return view('disposition.flights.index', compact(
             'flights',
             'airports',
             'crews',
+            'issues',
         ));
     }
 

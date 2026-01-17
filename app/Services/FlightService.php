@@ -206,6 +206,7 @@ class FlightService
                         'description' => "Aircraft {$aircraft->registration_number} arrives at {$currentFlight->arrivalAirport->icao_code} but next flight departs from {$nextFlight->departureAirport->icao_code}",
                         'flight_1' => $currentFlight,
                         'flight_2' => $nextFlight,
+                        'aircraft' => $aircraft,
                         'severity' => 'error',
                     ];
                 }
@@ -220,6 +221,7 @@ class FlightService
                         'description' => "Aircraft {$aircraft->registration_number} lands at " . date('H:i', $currentArrival) . " but next flight departs at " . date('H:i', $nextDeparture),
                         'flight_1' => $currentFlight,
                         'flight_2' => $nextFlight,
+                        'aircraft' => $aircraft,
                         'severity' => 'error',
                     ];
                 }

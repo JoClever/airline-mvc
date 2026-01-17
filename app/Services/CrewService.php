@@ -37,10 +37,10 @@ class CrewService
         $flightHoursMonthLimit = null
     ): Crew
     {
-        $flightsDayLimit ??= (int) env('CREW_MAX_FLIGHTS_DAY') ?? 1;
-        $flightsMonthLimit ??= (int) env('CREW_MAX_FLIGHTS_MONTH') ?? 2;
-        $flightHoursDayLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_DAY') ?? 4;
-        $flightHoursMonthLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_MONTH') ?? 6;
+        $flightsDayLimit ??= (int) env('CREW_MAX_FLIGHTS_DAY') ?? 4;
+        $flightsMonthLimit ??= (int) env('CREW_MAX_FLIGHTS_MONTH') ?? 20;
+        $flightHoursDayLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_DAY') ?? 8;
+        $flightHoursMonthLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_MONTH') ?? 60;
 
         $crew->flights_day = $crew->flights()
             ->whereDate('departure_time_scheduled', $day->toDateString())
@@ -97,25 +97,168 @@ class CrewService
     }
 
     /**
-     * Get warning messages for crew members that exceeded limits.
+     * Get warning messages for crew that exceeded limits.
      */
     public function getCrewLimitWarnings(Crew $crew): array
     {
         $warnings = [];
         
         if ($crew->flights_day_limit) {
-            $warnings[] = 'This crew member has exceeded the flights per day limit.';
+            $warnings[] = 'This crew has exceeded the flights per day limit.';
         }
         if ($crew->flights_month_limit) {
-            $warnings[] = 'This crew member has exceeded the flights per month limit.';
+            $warnings[] = 'This crew has exceeded the flights per month limit.';
         }
         if ($crew->hours_day_limit) {
-            $warnings[] = 'This crew member has exceeded the flight hours per day limit.';
+            $warnings[] = 'This crew has exceeded the flight hours per day limit.';
         }
         if ($crew->hours_month_limit) {
-            $warnings[] = 'This crew member has exceeded the flight hours per month limit.';
+            $warnings[] = 'This crew has exceeded the flight hours per month limit.';
         }
         
         return $warnings;
+    }
+
+    /**
+     * Check for crew routing, timing issues, and limit violations.
+     * Returns array of issues with type, description, and affected crew/flights.
+     */
+    public function checkCrewIssues(): array
+    {
+        $issues = [];
+        $crews = Crew::all();
+
+        // Limits for checking
+        $flightsDayLimit ??= (int) env('CREW_MAX_FLIGHTS_DAY') ?? 4;
+        $flightsMonthLimit ??= (int) env('CREW_MAX_FLIGHTS_MONTH') ?? 20;
+        $flightHoursDayLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_DAY') ?? 8;
+        $flightHoursMonthLimit ??= (int) env('CREW_MAX_FLIGHT_HOURS_MONTH') ?? 60;
+
+        foreach ($crews as $crew) {
+            // Get all flights for this crew: both assigned flights and transfer flights
+            $assignedFlights = $crew->flights()
+                ->orderBy('departure_time_scheduled')
+                ->with(['departureAirport', 'arrivalAirport'])
+                ->get();
+            
+            $transferFlights = $crew->transferFlights()
+                ->orderBy('departure_time_scheduled')
+                ->with(['departureAirport', 'arrivalAirport'])
+                ->get();
+
+            // Merge and sort all flights by departure time
+            $allFlights = $assignedFlights->merge($transferFlights)
+                ->sortBy('departure_time_scheduled')
+                ->values();
+
+            if ($allFlights->count() < 2) {
+                // Still check limit violations
+                $this->checkCrewLimitViolations($crew, $allFlights, $issues, $flightsDayLimit, $flightsMonthLimit, $flightHoursDayLimit, $flightHoursMonthLimit);
+                continue;
+            }
+
+            // Check each consecutive pair of flights for routing and timing issues
+            for ($i = 0; $i < $allFlights->count() - 1; $i++) {
+                $currentFlight = $allFlights[$i];
+                $nextFlight = $allFlights[$i + 1];
+
+                // Check airport consistency (current arrival should match next departure)
+                if ($currentFlight->arrival_airport_id !== $nextFlight->departure_airport_id) {
+                    $issues[] = [
+                        'type' => 'Airport Inconsistency',
+                        'description' => "Crew #{$crew->id} arrives at {$currentFlight->arrivalAirport->icao_code} but next flight departs from {$nextFlight->departureAirport->icao_code}",
+                        'flight_1' => $currentFlight,
+                        'flight_2' => $nextFlight,
+                        'crew' => $crew,
+                        'severity' => 'error',
+                    ];
+                }
+
+                // Check time collision (next departure should be after current arrival)
+                $currentArrival = strtotime($currentFlight->arrival_time_scheduled);
+                $nextDeparture = strtotime($nextFlight->departure_time_scheduled);
+
+                if ($nextDeparture <= $currentArrival) {
+                    $issues[] = [
+                        'type' => 'Time Collision',
+                        'description' => "Crew #{$crew->id} lands at " . date('H:i', $currentArrival) . " but next flight departs at " . date('H:i', $nextDeparture),
+                        'flight_1' => $currentFlight,
+                        'flight_2' => $nextFlight,
+                        'crew' => $crew,
+                        'severity' => 'error',
+                    ];
+                }
+            }
+
+            // Check crew limit violations
+            $this->checkCrewLimitViolations($crew, $allFlights, $issues, $flightsDayLimit, $flightsMonthLimit, $flightHoursDayLimit, $flightHoursMonthLimit);
+        }
+
+        return $issues;
+    }
+
+    /**
+     * Check crew limit violations for flights per day/month and hours per day/month.
+     */
+    private function checkCrewLimitViolations(Crew $crew, Collection $allFlights, array &$issues, int $flightsDayLimit, int $flightsMonthLimit, int $flightHoursDayLimit, int $flightHoursMonthLimit): void
+    {
+        // Group flights by day and month
+        $flightsByDay = $allFlights->groupBy(function($flight) {
+            return date('Y-m-d', strtotime($flight->departure_time_scheduled));
+        });
+
+        $flightsByMonth = $allFlights->groupBy(function($flight) {
+            return date('Y-m', strtotime($flight->departure_time_scheduled));
+        });
+
+        // Check daily flight count limit
+        foreach ($flightsByDay as $day => $dayFlights) {
+            if ($dayFlights->count() > $flightsDayLimit) {
+                $issues[] = [
+                    'type' => 'Daily Flight Limit',
+                    'description' => "Crew #{$crew->id} exceeds daily flight limit on {$day} with {$dayFlights->count()} flights (limit: {$flightsDayLimit})",
+                    'crew' => $crew,
+                    'severity' => 'warning',
+                ];
+            }
+        }
+
+        // Check daily flight hours limit
+        foreach ($flightsByDay as $day => $dayFlights) {
+            $hours = $this->countHours($dayFlights);
+            if ($hours > $flightHoursDayLimit) {
+                $issues[] = [
+                    'type' => 'Daily Hours Limit',
+                    'description' => "Crew #{$crew->id} exceeds daily flight hours on {$day} with {$hours}h (limit: {$flightHoursDayLimit}h)",
+                    'crew' => $crew,
+                    'severity' => 'warning',
+                ];
+            }
+        }
+
+        // Check monthly flight count limit
+        foreach ($flightsByMonth as $month => $monthFlights) {
+            if ($monthFlights->count() > $flightsMonthLimit) {
+                $issues[] = [
+                    'type' => 'Monthly Flight Limit',
+                    'description' => "Crew #{$crew->id} exceeds monthly flight limit in {$month} with {$monthFlights->count()} flights (limit: {$flightsMonthLimit})",
+                    'crew' => $crew,
+                    'severity' => 'warning',
+                ];
+            }
+        }
+
+        // Check monthly flight hours limit
+        foreach ($flightsByMonth as $month => $monthFlights) {
+            $hours = $this->countHours($monthFlights);
+            if ($hours > $flightHoursMonthLimit) {
+                $issues[] = [
+                    'type' => 'Monthly Hours Limit',
+                    'description' => "Crew #{$crew->id} exceeds monthly flight hours in {$month} with {$hours}h (limit: {$flightHoursMonthLimit}h)",
+                    'crew' => $crew,
+                    'severity' => 'warning',
+                ];
+            }
+        }
     }
 }
