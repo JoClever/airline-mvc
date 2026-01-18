@@ -33,8 +33,8 @@ class FlightController extends Controller
         $flights = $this->flightService->enrichFlightsWithStatus($flights);
         
         // Check for aircraft and crew routing, timing, and limit issues
-        $aircraftIssues = $this->flightService->checkAircraftIssues(includeLiveTimes: true);
-        $crewIssues = $this->crewService->checkCrewIssues(includeLiveTimes: true);
+        $aircraftIssues = $this->flightService->checkAircraftIssues(includeLiveTimes: true, includeDiversions: true);
+        $crewIssues = $this->crewService->checkCrewIssues(includeLiveTimes: true, includeDiversions: true);
         $issues = array_merge($aircraftIssues, $crewIssues);
         
         return view('ops.flights.index', compact(

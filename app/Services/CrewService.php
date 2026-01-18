@@ -123,7 +123,7 @@ class CrewService
      * Check for crew routing, timing issues, and limit violations.
      * Returns array of issues with type, description, and affected crew/flights.
      */
-    public function checkCrewIssues(bool $includeLiveTimes = false): array
+    public function checkCrewIssues(bool $includeLiveTimes = false, bool $includeDiversions = false): array
     {
         $issues = [];
         $crews = Crew::all();
@@ -167,6 +167,18 @@ class CrewService
                     $issues[] = [
                         'type' => 'Airport Inconsistency',
                         'description' => "Crew #{$crew->id} arrives at {$currentFlight->arrivalAirport->icao_code} but next flight departs from {$nextFlight->departureAirport->icao_code}",
+                        'flight_1' => $currentFlight,
+                        'flight_2' => $nextFlight,
+                        'crew' => $crew,
+                        'severity' => 'error',
+                    ];
+                }
+
+                // Check diversion consistency if required
+                if ($includeDiversions && $currentFlight->diversion_airport_id && $currentFlight->diversion_airport_id !== $nextFlight->departure_airport_id) {
+                    $issues[] = [
+                        'type' => 'Diversion Inconsistency',
+                        'description' => "Crew #{$crew->id} diverts to {$currentFlight->diversion_airport_id} but next flight departs from {$nextFlight->departureAirport->icao_code}",
                         'flight_1' => $currentFlight,
                         'flight_2' => $nextFlight,
                         'crew' => $crew,

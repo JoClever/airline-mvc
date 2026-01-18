@@ -178,7 +178,7 @@ class FlightService
      * Check for aircraft routing and timing issues.
      * Returns array of issues with type, description, and affected flights.
      */
-    public function checkAircraftIssues(bool $includeLiveTimes = false): array
+    public function checkAircraftIssues(bool $includeLiveTimes = false, bool $includeDiversions = false): array
     {
         $issues = [];
         $aircrafts = Aircraft::all();
@@ -204,6 +204,18 @@ class FlightService
                     $issues[] = [
                         'type' => 'Airport Inconsistency',
                         'description' => "Aircraft {$aircraft->registration_number} arrives at {$currentFlight->arrivalAirport->icao_code} but next flight departs from {$nextFlight->departureAirport->icao_code}",
+                        'flight_1' => $currentFlight,
+                        'flight_2' => $nextFlight,
+                        'aircraft' => $aircraft,
+                        'severity' => 'error',
+                    ];
+                }
+
+                // Check diversion consistency if required
+                if ($includeDiversions && $currentFlight->diversion_airport_id && $currentFlight->diversion_airport_id !== $nextFlight->departure_airport_id) {
+                    $issues[] = [
+                        'type' => 'Diversion Inconsistency',
+                        'description' => "Aircraft {$aircraft->registration_number} diverts to {$currentFlight->diversionAirport->icao_code} but next flight departs from {$nextFlight->departureAirport->icao_code}",
                         'flight_1' => $currentFlight,
                         'flight_2' => $nextFlight,
                         'aircraft' => $aircraft,
