@@ -1,59 +1,224 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Airline-Management-System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Eine Webanwendung zur Verwaltung von Flugoperationen, entwickelt mit **Laravel 12** und **PHP 8.2**.
+Dieses Projekt entstand im Rahmen des Moduls **"Software Engineering und KI"** an der Technischen Hochschule Ingolstadt.
 
-## About Laravel
+## Übersicht
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Die Webanwendung bietet ein System zur Verwaltung von Flugoperationen mit rollenbasierten Dashboards für verschiedene Abteilungen:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Planung**: Flugplanung und Flugzeugzuweisung
+- **Disposition**: Dynamische Crew-Zuweisung und Flugmodifikationen
+- **Operations**: Flugdurchführung und Störungsbehebung
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Motivation
 
-## Learning Laravel
+- **Kreatives Konzept**: Ein realweltliches Szenario aus der Luftfahrttechnik, das komplexe Problemstellungen bietet
+- **Praxisbezug**: Modelierung echter Flugbetriebsprozesse mit interessanten Herausforderungen bei der technischen Umsetzung
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Zielsetzung
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Sicherstellung eines **Reibungslosen Flugbetriebs**
+- **Ressourcen-Management** für Flugzeuge, Crews und Flughäfen
+- **Störungsbehebung** durch flexible Crew-Zuweisung und Flugmodifikationen
+- **Rollenbasierte Unterteilung** der Aufgaben zwischen verschiedenen Abteilungen
 
-## Laravel Sponsors
+Diese Anwendung ist ein **stark vereinfachtes Abbild** realer Abläufe:
+- **Nicht für den produktiven Einsatz** gedacht
+- Didaktisches Modell zur **Demonstration von Konzepten**
+- **Begrenzte Funktionalität** gegenüber industriellen Lösungen
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Technologie-Stack
 
-### Premium Partners
+- **Framework**: [Laravel 12](https://laravel.com)
+- **Sprache**: PHP 8.3+
+- **Frontend**: Blade-Templates mit Tailwind CSS
+- **Build-Tool**: Vite
+- **Datenbank**: Eloquent ORM mit Migrations
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Projektstruktur
 
-## Contributing
+```
+airline-mvc/
+├── app/                         # Anwendungskern
+│   ├── Models/                  # Eloquent Datenmodelle
+│   ├── Http/                    # HTTP-Handler
+│   │   ├── Controllers/         # Anwendungslogik
+│   │   └── Requests/            # Formularvalidierung
+│   ├── Services/                # Geschäftslogik
+│   ├── Providers/               # Service Provider (ungenutzt)
+│   └── View/                    # View-Komponenten
+├── config/                      # Konfigurationsdateien
+├── database/                    # Datenbank-Management
+│   ├── migrations/              # Datenbankmigrationen
+│   ├── factories/               # Model Factories
+│   └── seeders/                 # Datenbank-Seeder
+├── public/                      # Web root Verzeichnis
+├── resources/                   # Frontend-Ressourcen
+│   ├── css/                     # Stylesheets
+│   ├── js/                      # JavaScript
+│   └── views/                   # Blade-Templates
+├── routes/                      # Route-Definitionen
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Hauptfunktionen
 
-## Code of Conduct
+### Flugverwaltung
+- Flüge erstellen und planen
+- Flugstatus verfolgen (geplant, geschätzt, aktuell)
+- Abflugs-, Ankunfts- und Ausweichflughäfen verwalten
+- Flugzeugzuweisung und Verfolgung
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Crew-Management
+- Crews Flügen zuweisen
+- Crew-Pläne und Zuweisungen anzeigen
+- Crew zwischen Flügen mit anderen Flügen transferieren
+- Arbeitszeit-Limits verfolgen
 
-## Security Vulnerabilities
+## Rollenkonzept
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Die Anwendung ist in drei spezialisierte Module unterteilt, die verschiedene Aspekte der Flugoperationen abdecken:
 
-## License
+### Planung (Planner)
+- **Aufgabe**: Erstellung von Flügen und Zuweisung von Flugzeugen
+- **Funktionen**:
+  - Neue Flüge erstellen und planen
+  - Flugzeug und Registrierung zuweisen
+  - Abflug- und Ankunftsflughäfen definieren
+  - Zeitliche Planung vornehmen
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Disposition
+- **Aufgabe**: Zuweisung und Verwaltung von Crews
+- **Funktionen**:
+  - Flügen Crews zuweisen
+  - Crews transferieren
+  - Flugdetails bei Bedarf aktualisieren
+  - Crew-Verfügbarkeit überwachen
+
+### Operations
+- **Aufgabe**: Durchführung und Überwachung des Flugbetriebs
+- **Funktionen**:
+  - Flugstatus ~~in Echtzeit~~ überwachen
+  - Zeiten anpassen, Flüge stornieren oder umleiten
+  - Störungen und Probleme erkennen und beheben
+  - Flugdetails und Informationen abrufen
+  - Crew-Status und Verfügbarkeit prüfen
+
+## Wichtige Modelle und Beziehungen
+
+- **Flight**: 
+    - 1 Aircraft
+    - je 1 Abflug-/Ankunfts-/Ausweichflughafen (Aiport)
+    - 1 operating Crew
+    - 0..n Crew-Transfers 
+- **Crew**: 
+    - 0..n Flüge
+    - 0..n Transfer-Flüge
+- **Aircraft**:
+    - 0..n Flüge
+- **Airport**:
+    - 0..n ankommende und abgehende Flüge
+
+## Datenbankschema
+
+Die Anwendung nutzt Migrations zur Verwaltung folgender Tabellen:
+- `flights` - Flugdaten und Planung
+- `aircraft` - Flugzeugbestand
+- `crews` - Personalbestand (auf Crew-Einheiten vereinfacht)
+- `airports` - Flughäfen
+- `flight_crew_transfers` - Crew-Transferflüge
+
+## Einrichtung und Installation
+
+### Voraussetzungen
+
+- PHP 8.3 oder höher
+- Composer
+- Node.js und npm
+- SQLite (Standard) oder MySQL
+
+### Schnellstart
+
+1. **Abhängigkeiten installieren:**
+   ```bash
+   composer install
+   npm install
+   ```
+
+2. **Umgebung einrichten:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+3. **Migrations und ggf. Seeders ausführen:**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+4. **Frontend-Assets erstellen:**
+   ```bash
+   npm run build
+   ```
+
+5. **Anwendung starten:**
+   ```bash
+   php artisan serve
+   ```
+
+Die Anwendung ist unter `http://localhost:8000` verfügbar.
+
+### Entwicklungsmodus
+
+Alle Services gleichzeitig ausführen (Server, Queue, Logs und Vite):
+```bash
+composer run dev
+```
+
+## Verfügbare Routen
+
+- `/` - Startseite
+- `/planner` - Flugplanung und Terminplanung
+- `/disposition` - Crew-Zuweisung und Verwaltung
+- `/ops` - Operations und Überwachung
+
+### Ressourcen-ähnliche Endpunkte
+
+- `planner/flights` - Vollständiges CRUD für Flugplanung
+- `disposition/flights` - Anzeigen, aktualisieren, Flugdetails einsehen
+- `disposition/crews` - Crews überwachen
+- `ops/flights` - Flüge überwachen
+- `ops/crews` - Crews überwachen
+
+## Tests (WIP)
+
+Tests mit Pest ausführen:
+```bash
+php artisan test
+```
+
+## Ausblick und zukünftige Entwicklungen
+
+Das Projekt bietet eine solide Grundlage für weitere Entwicklungen und Verbesserungen, z.B. als Virtual-Airline-Management-System:
+
+### Kurzfristig
+- **Authentifizierung**: Implementierung eines umfassenden Login-Systems
+- **Benutzeroberfläche**: Überarbeitung des UI mit verbessertem Menü, Pagination und responsiven Dashboards
+- **View-Struktur**: Neuorganisation und Optimierung der Blade-Templates
+
+### Mittelfristig
+- **Architektur-Refactoring**: 
+  - Trennung in Backend-API und Frontend-Anwendung
+  - RESTful API zur Backend-Verwaltung
+- **Multi-Platform-Support**: 
+  - Webbasiertes Frontend
+  - Native Anwendungen (Android, iOS, Windows, Linux)
+
+### Langfristig
+- **Funktionserweiterung**: Ersatzflüge, erweiterte Ressourcenplanung, Echtzeitanpassungen
+- **Anpassung an realen Einsatzzweck**: z.B. VA Management...
+
+## Lizenz
+
+Dieses Projekt ist Free Open Source und unter ISC-Lizenz veröffentlicht. Siehe [LICENSE](LICENSE) für Details.
